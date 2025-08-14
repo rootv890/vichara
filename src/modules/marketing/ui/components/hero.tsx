@@ -100,7 +100,6 @@ export function HeroSection() {
 				>
 					<Button
 						size="lg"
-						_hover={{ bg: "gray.800" }}
 						px={8}
 						py={4}
 						rounded="lg"
@@ -115,7 +114,6 @@ export function HeroSection() {
 					<Button
 						variant="outline"
 						size="lg"
-						_hover={{ bg: "gray.50" }}
 						px={8}
 						py={4}
 						rounded="lg"
