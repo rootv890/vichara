@@ -25,7 +25,7 @@ export default function Providers({ children }: { children: ReactNode }) {
 				<ChakraProvider>
 					<ThemeProvider>
 						{/* TODO shift auth-guard to one layer down */}
-						<AuthGuard>{children}</AuthGuard>
+						{children}
 					</ThemeProvider>
 				</ChakraProvider>
 			</ConvexProviderWithClerk>

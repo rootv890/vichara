@@ -1,11 +1,14 @@
 "use client"
 import { ColorModeButton } from "@/components/ui/color-mode"
 import { cn } from "@/lib/utils"
-import { Box, Button, Flex, Icon, Stack, Text } from "@chakra-ui/react"
+import { Box, Button, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react"
+import { SignInButton, UserButton } from "@clerk/nextjs"
+import { useConvexAuth } from "convex/react"
 import { useTheme } from "next-themes"
 import Image from "next/image"
+import Link from "next/link"
 import React from "react"
-import { LuArrowRight } from "react-icons/lu"
+import { LuArrowRight, LuLogIn } from "react-icons/lu"
 import { transform } from "zod"
 import { useScrollTop } from "../../hooks/use-scroll-top"
 
@@ -13,6 +16,7 @@ type Props = {}
 
 function MarketingNavbar({}: Props) {
 	const scrolled = useScrollTop()
+	const { isAuthenticated, isLoading } = useConvexAuth()
 	const { theme } = useTheme()
 	return (
 		<Box
@@ -57,35 +61,54 @@ function MarketingNavbar({}: Props) {
 						Vichara
 					</Text>
 				</Flex>
-				<Box>
+				<Box
+					alignItems={"center"}
+					display={"flex"}
+					gap={3}
+				>
 					<ColorModeButton
 						size={"sm"}
-						mr={2}
+						// mr={2}
 						p={"16px"}
 						rounded={"lg"}
 					/>
 
 					{/* auth based button */}
+					{isAuthenticated && <UserButton />}
 					<Button
 						size="sm"
-						_hover={{ bg: "gray.800" }}
 						px={4}
 						py={4}
 						rounded="lg"
 						transition="all 0.2s"
 						role="group"
+						disabled={isLoading}
+						asChild
 					>
-						{/* Sign Up or Login or Continue */}
-						Continue
-						<Icon
-							as={LuArrowRight}
-							transition="all 0.2s"
-							ml={2}
-							_groupHover={{
-								transform: "translateX(12px)",
-								color: "blue.500",
-							}}
-						/>
+						<Link href="/notes">
+							{/* Sign Up or Login or Continue */}
+							{isLoading ? (
+								<Spinner
+									size={"sm"}
+									color="blue.500"
+									animationDuration="0.8s"
+								/>
+							) : isAuthenticated ? (
+								"Continue Vichara"
+							) : (
+								<SignInButton mode="modal">Sign Up</SignInButton>
+							)}
+
+							<Icon
+								as={isAuthenticated ? LuArrowRight : LuLogIn}
+								transition="all 0.2s"
+								ml={2}
+								_groupHover={{
+									transform: "translateX(12px)",
+									color: "blue.500",
+								}}
+							/>
+						</Link>
 					</Button>
 				</Box>
 			</Stack>

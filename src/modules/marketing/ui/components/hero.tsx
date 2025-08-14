@@ -9,13 +9,18 @@ import {
 	Highlight,
 	Icon,
 	Image,
+	Spinner,
 	Stack,
 	Text,
 } from "@chakra-ui/react"
+import { SignInButton } from "@clerk/nextjs"
+import { useConvexAuth } from "convex/react"
 import { useTheme } from "next-themes"
+import Link from "next/link"
 import {
 	LuArrowRight,
 	LuGithub,
+	LuLogIn,
 	LuPencil,
 	LuShield,
 	LuUsers,
@@ -23,6 +28,7 @@ import {
 
 export function HeroSection() {
 	const { themes, theme } = useTheme()
+	const { isAuthenticated, isLoading } = useConvexAuth()
 	return (
 		<Box
 			position="relative"
@@ -98,19 +104,48 @@ export function HeroSection() {
 					align="center"
 					mb={16}
 				>
-					<Button
-						size="lg"
-						px={8}
-						py={4}
-						rounded="lg"
-						transition="all 0.2s"
-					>
-						Start writing
-						<Icon
-							as={LuArrowRight}
-							ml={2}
+					{isLoading && (
+						<Spinner
+							size={"md"}
+							color="fg"
 						/>
-					</Button>
+					)}
+
+					{isAuthenticated && !isLoading && (
+						<Button
+							variant="solid"
+							size="lg"
+							px={8}
+							py={4}
+							rounded="lg"
+							transition="all 0.2s"
+							asChild
+						>
+							<Link href="/notes">
+								Continue Vichara
+								<Icon
+									as={LuArrowRight}
+									ml={2}
+								/>{" "}
+							</Link>
+						</Button>
+					)}
+					{!isAuthenticated && !isLoading && (
+						<SignInButton>
+							<Button
+								variant="solid"
+								size="lg"
+								px={8}
+								py={4}
+								rounded="lg"
+								transition="all 0.2s"
+							>
+								Get Vichara
+								<LuLogIn />
+							</Button>
+						</SignInButton>
+					)}
+
 					<Button
 						variant="outline"
 						size="lg"
