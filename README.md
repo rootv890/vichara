@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VICHARA
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-15.4.6-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Convex](https://img.shields.io/badge/Convex-1.25.4-FF6B6B?style=for-the-badge&logo=convex&logoColor=white)](https://convex.dev/)
+[![Clerk](https://img.shields.io/badge/Clerk-6.30.2-6C5CE7?style=for-the-badge&logo=clerk&logoColor=white)](https://clerk.com/)
+[![Chakra UI](https://img.shields.io/badge/Chakra_UI-3.24.2-319795?style=for-the-badge&logo=chakra-ui&logoColor=white)](https://chakra-ui.com/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-First, run the development server:
+> A modern, intuitive note-taking application that helps you capture, organize, and manage your thoughts with ease.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 Features
+
+- **🔐 Secure Authentication** - Powered by Clerk for seamless user management
+- **⚡ Real-time Sync** - Built with Convex for instant data synchronization
+- **🎨 Modern UI** - Beautiful interface using Chakra UI and Tailwind CSS
+- **📱 Responsive Design** - Works perfectly on desktop and mobile devices
+- **🌙 Dark Mode** - Eye-friendly theme switching
+- **📝 Rich Text Editing** - Powerful note editing capabilities
+- **🔍 Smart Search** - Find your notes quickly and efficiently
+- **🏷️ Organization** - Tag and categorize your thoughts
+
+## 🚀 Tech Stack
+
+- **Frontend Framework**: [Next.js 15](https://nextjs.org/) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Backend**: [Convex](https://convex.dev/) - Real-time backend-as-a-service
+- **Authentication**: [Clerk](https://clerk.com/) - Complete user management
+- **UI Components**: [Chakra UI v3](https://chakra-ui.com/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/) with Zod validation
+- **Package Manager**: [pnpm](https://pnpm.io/)
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (version 18 or higher)
+- [pnpm](https://pnpm.io/) package manager
+- A [Convex](https://convex.dev/) account
+- A [Clerk](https://clerk.com/) account
+
+## 🛠️ Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/rootv890/vichara.git
+   cd vichara
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Fill in your environment variables:
+
+   ```env
+   # Clerk Configuration
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
+
+   # Convex Configuration
+   CONVEX_DEPLOYMENT=your_convex_deployment_url
+   NEXT_PUBLIC_CONVEX_URL=your_convex_url
+   ```
+
+4. **Set up Convex**
+
+   ```bash
+   npx convex dev
+   ```
+
+5. **Run the development server**
+
+   ```bash
+   pnpm run dev:all
+   ```
+
+   This will start both the Next.js development server and Convex in parallel.
+
+6. **Open your browser**
+
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
+
+## 🏗️ Project Structure
+
+```
+vichara/
+├── src/
+│   ├── app/                 # Next.js App Router
+│   │   ├── (AUTH)/         # Authentication routes
+│   │   ├── (marketing)/    # Marketing pages
+│   │   └── api/            # API routes
+│   ├── components/         # Reusable UI components
+│   ├── modules/            # Feature modules
+│   └── providers/          # Context providers
+├── convex/                 # Convex backend functions
+├── public/                 # Static assets
+└── ...config files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+NOT DEPLOYED YET
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 Scripts
 
-## Learn More
+- `pnpm dev` - Start Next.js development server
+- `pnpm dev:all` - Start both Next.js and Convex development servers
+- `pnpm build` - Build the application for production
+- `pnpm start` - Start the production server
+- `pnpm lint` - Run ESLint
 
-To learn more about Next.js, take a look at the following resources:
+## 🤝 Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Deploy on Vercel
+## 📄 License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) team for the amazing React framework
+- [Convex](https://convex.dev/) for the real-time backend platform
+- [Clerk](https://clerk.com/) for authentication solutions
+- [Chakra UI](https://chakra-ui.com/) for the component library
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
+
+## 📞 Support
+
+If you have any questions or need help, please:
+
+- Open an [issue](https://github.com/rootv890/vichara/issues)
+- Join our [Discord community](#)
+- Email us at support@vichara.dev
+
+---
+
+<div align="center">
+  <strong>Built with ❤️ by the VICHARA team</strong>
+</div>
