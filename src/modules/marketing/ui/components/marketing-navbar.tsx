@@ -45,11 +45,24 @@ function MarketingNavbar({}: Props) {
 					justify={"center"}
 				>
 					<Image
-						src={theme === "dark" ? "/logo-white.svg" : "/logo-dark.svg"}
+						src={"/logo-white.svg"}
 						alt="Logo"
 						width={32}
 						height={32}
-						className="transition-all ease-in-out duration-300 "
+						className={cn(
+							"transition-all ease-in-out duration-300 ",
+							theme === "light" && "!hidden"
+						)}
+					/>
+					<Image
+						src={"/logo-dark.svg"}
+						alt="Logo"
+						width={32}
+						height={32}
+						className={cn(
+							"transition-all ease-in-out duration-300 ",
+							theme === "dark" && "!hidden"
+						)}
 					/>
 					<Text
 						fontFamily={"var(--font-bricolage)"}
@@ -96,7 +109,7 @@ function MarketingNavbar({}: Props) {
 							) : isAuthenticated ? (
 								"Continue Vichara"
 							) : (
-								<SignInButton mode="modal">Sign Up</SignInButton>
+								<SignInButton>Sign Up</SignInButton>
 							)}
 
 							<Icon

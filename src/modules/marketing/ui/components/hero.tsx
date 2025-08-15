@@ -1,4 +1,5 @@
 "use client"
+import { cn } from "@/lib/utils"
 import {
 	Box,
 	Button,
@@ -9,6 +10,7 @@ import {
 	Highlight,
 	Icon,
 	Image,
+	Mark,
 	Spinner,
 	Stack,
 	Text,
@@ -27,7 +29,7 @@ import {
 } from "react-icons/lu"
 
 export function HeroSection() {
-	const { themes, theme } = useTheme()
+	const { theme } = useTheme()
 	const { isAuthenticated, isLoading } = useConvexAuth()
 	return (
 		<Box
@@ -49,13 +51,23 @@ export function HeroSection() {
 					align="center"
 					mb={12}
 				>
-					<Image
-						src={theme === "dark" ? "logo-white.svg" : "/logo-dark.svg"}
-						alt="Vichara Logo"
-						width="16"
-						height="16"
-						className="object-cover shadow-2xl rounded-2xl transition-all duration-300 ease-in-out"
-					/>
+					{theme === "dark" ? (
+						<Image
+							src={"/logo-white.svg"}
+							alt="Logo"
+							width={28}
+							height={28}
+							className={cn("transition-all ease-in-out duration-300 ")}
+						/>
+					) : (
+						<Image
+							src={"/logo-dark.svg"}
+							alt="Logo"
+							width={28}
+							height={28}
+							className={cn("transition-all ease-in-out duration-300 ")}
+						/>
+					)}
 				</Flex>
 
 				{/* Main headline */}
@@ -65,7 +77,7 @@ export function HeroSection() {
 					fontWeight="bold"
 					mb={6}
 					lineHeight="initial"
-					// fontFamily={"var(--font-bricolage)"}
+					fontFamily={"var(--font-bricolage)"}
 					color={"fg"}
 				>
 					Think clearly.
@@ -74,12 +86,23 @@ export function HeroSection() {
 						as="span"
 						color={"fg"}
 					>
-						<Highlight
-							styles={{ px: "0.5", bg: "blue.subtle", color: "blue.fg" }}
+						{/* <Highlight
+
 							query={"freely."}
 						>
 							Write freely.
-						</Highlight>
+						</Highlight> */}
+						Write{" "}
+						<Mark
+							bg={"blue.subtle"}
+							pr={0}
+							skewX={20}
+							willChange={"transform"}
+							border={2}
+							className="cursor-marker"
+						>
+							freely
+						</Mark>
 					</Text>
 				</Heading>
 

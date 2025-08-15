@@ -3,19 +3,17 @@ import {
 	Box,
 	Button,
 	Heading,
-	HStack,
-	Icon,
 	Input,
 	Link,
 	Text,
 	VStack,
 } from "@chakra-ui/react"
 import * as Clerk from "@clerk/elements/common"
-import * as SignIn from "@clerk/elements/sign-in"
+import * as SignUp from "@clerk/elements/sign-up"
 import Image from "next/image"
 import { FaGithub, FaGoogle } from "react-icons/fa"
 
-export function SignInView() {
+export const SignUpView = () => {
 	return (
 		<Box
 			display="grid"
@@ -24,15 +22,16 @@ export function SignInView() {
 			px={4}
 			w={"2xl"}
 		>
-			<SignIn.Root>
+			<SignUp.Root>
+				{/* ------------------------- */}
 				{/* Step: enter identifier */}
-				<SignIn.Step name="start">
+				<SignUp.Step name="start">
 					<Box
 						w={{ base: "full", sm: "480px", md: "520px" }}
 						rounded="2xl"
 						shadow="lg"
 						p={{ base: 6, sm: 8 }}
-						spaceY={6}
+						spaceY={4}
 						bg={"bg"}
 					>
 						{/* Header */}
@@ -59,11 +58,13 @@ export function SignInView() {
 							<Heading
 								as="h1"
 								size="xl"
-								fontWeight="medium"
+								fontWeight="bold"
+								fontSize={"2xl"}
 								color="fg"
+								mb={4}
 								fontFamily={"var(--font-bricolage)"}
 							>
-								Sign in to Vichara
+								Create your account
 							</Heading>
 						</Box>
 
@@ -76,7 +77,7 @@ export function SignInView() {
 						</Clerk.GlobalError>
 
 						{/* Email Field */}
-						<Clerk.Field name="identifier">
+						<Clerk.Field name="emailAddress">
 							<Clerk.Label className="sr-only">Email</Clerk.Label>
 							<Clerk.Input
 								asChild
@@ -96,13 +97,38 @@ export function SignInView() {
 								<Text
 									fontSize="xs"
 									color="red.500"
+								/>
+							</Clerk.FieldError>
+						</Clerk.Field>
+
+						{/* Password Field */}
+						<Clerk.Field name="password">
+							<Clerk.Label className="sr-only">Password</Clerk.Label>
+							<Clerk.Input
+								asChild
+								type="password"
+								required
+							>
+								<Input
+									placeholder="Password"
+									variant="subtle"
+									color={"fg"}
+									_invalid={{ borderColor: "red.500", color: "red.500" }}
+									py={2}
+									rounded={"xl"}
+								/>
+							</Clerk.Input>
+							<Clerk.FieldError asChild>
+								<Text
+									fontSize="xs"
+									color="red.500"
 									mt={2}
 								/>
 							</Clerk.FieldError>
 						</Clerk.Field>
 
 						{/* Submit Button */}
-						<SignIn.Action
+						<SignUp.Action
 							submit
 							asChild
 						>
@@ -112,11 +138,13 @@ export function SignInView() {
 								py={1.5}
 								fontSize="sm"
 								fontWeight="medium"
-								rounded="lg"
+								rounded="xl"
 							>
-								Sign In
+								Sign Up
 							</Button>
-						</SignIn.Action>
+						</SignUp.Action>
+
+						<div className="divider">or</div>
 
 						{/* Social Login Section */}
 						<Box
@@ -130,7 +158,7 @@ export function SignInView() {
 								color="fg"
 								mb={4}
 							>
-								Alternatively, sign in with these platforms
+								Sign up with these platforms
 							</Text>
 							<VStack gap={2}>
 								<Clerk.Connection
@@ -145,7 +173,7 @@ export function SignInView() {
 										rounded={"xl"}
 									>
 										<FaGithub />
-										Login with GitHub
+										Sign up with GitHub
 									</Button>
 								</Clerk.Connection>
 								<Clerk.Connection
@@ -160,20 +188,20 @@ export function SignInView() {
 										rounded={"xl"}
 									>
 										<FaGoogle />
-										Login with Google
+										Sign up with Google
 									</Button>
 								</Clerk.Connection>
 							</VStack>
 						</Box>
 
-						{/* Sign Up Link */}
+						{/* Sign In Link */}
 						<Text
 							textAlign="center"
 							fontSize="sm"
 							color="gray.500"
 						>
-							Don&apos;t have an account?{" "}
-							<Clerk.Link navigate="sign-up">
+							Already have an account?{" "}
+							<Clerk.Link navigate="sign-in">
 								<Link
 									color="gray.700"
 									fontWeight="medium"
@@ -182,23 +210,24 @@ export function SignInView() {
 									py={0.5}
 									rounded="sm"
 								>
-									Sign up
+									Sign in
 								</Link>
 							</Clerk.Link>
 						</Text>
 					</Box>
-				</SignIn.Step>
+				</SignUp.Step>
 
+				{/* ------------------------- */}
 				{/* Step: Email Verification */}
-				<SignIn.Step name="verifications">
-					<SignIn.Strategy name="email_code">
+				<SignUp.Step name="verifications">
+					<SignUp.Strategy name="email_code">
 						<Box
 							w={{ base: "full", sm: "480px", md: "520px" }}
-							bg="white"
 							rounded="2xl"
 							shadow="lg"
 							p={{ base: 6, sm: 8 }}
-							spaceY={6}
+							bg={"bg"}
+							spaceY={4}
 						>
 							{/* Header */}
 							<Box textAlign="center">
@@ -206,28 +235,37 @@ export function SignInView() {
 									mx="auto"
 									w="10"
 									h="10"
-									bg="gray.900"
 									rounded="full"
 									display="flex"
 									alignItems="center"
 									justifyContent="center"
+									overflow={"clip"}
 									mb={4}
 								>
-									<Text
-										color="white"
-										fontWeight="bold"
-									>
-										V
-									</Text>
+									<Image
+										src="/logo-dark.svg"
+										alt="Vichara Logo"
+										width={40}
+										height={40}
+										className="object-cover"
+									/>
 								</Box>
 								<Heading
 									as="h1"
-									size="lg"
+									size="xl"
 									fontWeight="medium"
-									color="gray.900"
+									color="fg"
+									fontFamily={"var(--font-bricolage)"}
 								>
-									Verify email code
+									Verify your email
 								</Heading>
+								<Text
+									fontSize="sm"
+									color="fg.muted"
+									mt={2}
+								>
+									We sent a verification code to your email
+								</Text>
 							</Box>
 
 							{/* Global Error */}
@@ -248,12 +286,11 @@ export function SignInView() {
 								>
 									<Input
 										placeholder="Email code"
-										variant="flushed"
-										borderColor="gray.300"
-										_hover={{ borderColor: "gray.400" }}
-										_focus={{ borderColor: "gray.600" }}
+										variant="subtle"
+										color={"fg"}
 										_invalid={{ borderColor: "red.500", color: "red.500" }}
 										py={2}
+										rounded={"xl"}
 									/>
 								</Clerk.Input>
 								<Clerk.FieldError asChild>
@@ -266,33 +303,30 @@ export function SignInView() {
 							</Clerk.Field>
 
 							{/* Submit Button */}
-							<SignIn.Action
+							<SignUp.Action
 								submit
 								asChild
 							>
 								<Button
 									w="full"
-									bg="gray.600"
 									color="white"
-									_hover={{ bg: "gray.700" }}
-									_active={{ bg: "gray.600" }}
 									py={1.5}
 									fontSize="sm"
 									fontWeight="medium"
-									rounded="md"
+									rounded="lg"
 								>
-									Continue
+									Verify Email
 								</Button>
-							</SignIn.Action>
+							</SignUp.Action>
 
-							{/* Sign Up Link */}
+							{/* Sign In Link */}
 							<Text
 								textAlign="center"
 								fontSize="sm"
 								color="gray.500"
 							>
-								Don&apos;t have an account?{" "}
-								<Clerk.Link navigate="sign-up">
+								Already have an account?{" "}
+								<Clerk.Link navigate="sign-in">
 									<Link
 										color="gray.700"
 										fontWeight="medium"
@@ -301,14 +335,14 @@ export function SignInView() {
 										py={0.5}
 										rounded="sm"
 									>
-										Sign up
+										Sign in
 									</Link>
 								</Clerk.Link>
 							</Text>
 						</Box>
-					</SignIn.Strategy>
-				</SignIn.Step>
-			</SignIn.Root>
+					</SignUp.Strategy>
+				</SignUp.Step>
+			</SignUp.Root>
 		</Box>
 	)
 }

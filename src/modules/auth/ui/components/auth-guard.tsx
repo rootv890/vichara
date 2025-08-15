@@ -1,5 +1,6 @@
 "use client"
 
+import { BouncyLoading } from "@/components/loadings"
 import { api } from "@convex/_generated/api"
 import {
 	Authenticated,
@@ -15,15 +16,15 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 		<>
 			<AuthLoading>
 				<AuthLayout>
-					{/* <BouncyLoading label="Setting things up!" /> */}
-					<div>Loading.... imagine : BOUNCING</div>
+					<BouncyLoading label="Checking authentication..." />
 				</AuthLayout>
 			</AuthLoading>
 			<Authenticated>{children}</Authenticated>
 			<Unauthenticated>
-				<AuthLayout>
+				{/* <AuthLayout>
 					<SignInView />
-				</AuthLayout>
+				</AuthLayout> */}
+				{children}
 			</Unauthenticated>
 		</>
 	)

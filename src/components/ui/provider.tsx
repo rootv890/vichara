@@ -1,6 +1,10 @@
 "use client"
 
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react"
+import {
+	ChakraProvider,
+	defaultSystem,
+	defineTextStyles,
+} from "@chakra-ui/react"
 import { ColorModeProvider, type ColorModeProviderProps } from "./color-mode"
 
 import { createSystem, defaultConfig } from "@chakra-ui/react"
@@ -12,6 +16,14 @@ const system = createSystem(defaultConfig, {
 				heading: { value: "var(--font-bricolage)" },
 				body: { value: "var(--font-bricolage)" },
 			},
+		},
+	},
+})
+
+export const textStyles = defineTextStyles({
+	headline: {
+		value: {
+			fontFamily: "var(--font-bricolage)",
 		},
 	},
 })

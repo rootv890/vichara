@@ -2,6 +2,7 @@ import Providers from "@/providers/providers"
 import type { Metadata } from "next"
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
+import { ClerkProvider } from "@clerk/nextjs"
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -43,29 +44,31 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html
-			lang="en"
-			suppressHydrationWarning
-			className={bricolage.variable}
-		>
-			<head>
-				<link
-					rel="icon"
-					href="/logo-white.svg"
-					media="(prefers-color-scheme: dark)"
-				/>
-				<link
-					rel="icon"
-					href="/logo-dark.svg"
-					media="(prefers-color-scheme: light)"
-				/>
-			</head>
-			<body
+		<ClerkProvider>
+			<html
+				lang="en"
 				suppressHydrationWarning
-				className={`${geistMono.variable} ${bricolage.variable} antialiased`}
+				className={bricolage.variable}
 			>
-				<Providers>{children}</Providers>
-			</body>
-		</html>
+				<head>
+					<link
+						rel="icon"
+						href="/logo-white.svg"
+						media="(prefers-color-scheme: dark)"
+					/>
+					<link
+						rel="icon"
+						href="/logo-dark.svg"
+						media="(prefers-color-scheme: light)"
+					/>
+				</head>
+				<body
+					suppressHydrationWarning
+					className={`${geistMono.variable} ${bricolage.variable} antialiased`}
+				>
+					<Providers>{children}</Providers>
+				</body>
+			</html>
+		</ClerkProvider>
 	)
 }
