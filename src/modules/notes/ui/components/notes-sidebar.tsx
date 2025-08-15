@@ -1,9 +1,11 @@
 "use client"
+import { ColorModeButton } from "@/components/ui/color-mode"
 import { organizationIdAtom } from "@/modules/atoms/atoms"
 import {
 	Box,
 	Button,
 	Collapsible,
+	For,
 	HStack,
 	Text,
 	VStack,
@@ -12,12 +14,15 @@ import { useUser } from "@clerk/nextjs"
 import { api } from "@convex/_generated/api"
 import { useQuery } from "convex/react"
 import { useAtomValue } from "jotai/react"
+import { useTheme } from "next-themes"
+import Image from "next/image"
 import React from "react"
 import toast from "react-hot-toast"
 import { GoTriangleRight } from "react-icons/go"
 import { IoIosArrowBack } from "react-icons/io"
 import { LuPlus } from "react-icons/lu"
 import { TbMenu } from "react-icons/tb"
+import { useCreateNote } from "../../hooks/use-create-note"
 import NoteSidebarItem from "./note-sidebar-item"
 import OrganizationSwitcher from "./organization-switcher"
 import UserButton from "./user-button"
@@ -31,6 +36,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 	const ref = React.useRef<HTMLDivElement>(null)
 	const organizationIdFromAtom = useAtomValue(organizationIdAtom)
 	const { user } = useUser()
+	const { createNotePromise, isLoading, error } = useCreateNote()
 
 	const notesList = useQuery(
 		api.notes.getAll,
@@ -38,6 +44,23 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 			? { userId: user.id, organizationId: organizationIdFromAtom }
 			: "skip"
 	)
+
+	function handleNewNote() {
+		toast.promise(
+			// @ts-ignore will fix
+			createNotePromise({
+				title: "New Note",
+				// isArchived: false,
+				organizationId: organizationIdFromAtom!,
+				userId: user?.id!,
+			}),
+			{
+				loading: "Creating note...",
+				success: "Note created!",
+				error: (err) => `Error creating note: ${err.message}`,
+			}
+		)
+	}
 
 	// cmd + b to toggle sidebar
 	React.useEffect(() => {
@@ -55,11 +78,12 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 		<Box
 			ref={ref}
 			w={isCollapsed ? "60px" : "fit"}
+			maxW={"300px"}
 			pos={"relative"}
 			h="100vh"
 			bg="bg.subtle"
 			borderRight="1px solid"
-			borderColor="gray.subtle"
+			borderColor={"gray.fg/10"}
 			transition="width 0.3s ease"
 			flexShrink={0}
 			p={2}
@@ -101,8 +125,13 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 						aria-label="New Note"
 						title="New Note"
 						rounded={"l3"}
+						onClick={handleNewNote}
+						disabled={isLoading}
 					>
-						<LuPlus /> {!isCollapsed && <Text>New Note</Text>}
+						<LuPlus />{" "}
+						{!isCollapsed && (
+							<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
+						)}
 					</Button>
 
 					{!isCollapsed && (
@@ -134,21 +163,47 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 										align="stretch"
 										gap={0}
 									>
-										{notesList?.map((note) => (
-											<NoteSidebarItem
-												key={note._id}
-												note={note}
-												onRename={() => {
-													toast.error(`Feature not implemented`)
-												}}
-												onDuplicate={() => {
-													toast.error(`Feature not implemented`)
-												}}
-												onDelete={() => {
-													toast.error(`Feature not implemented`)
-												}}
-											/>
-										))}
+										{/* {notesList?.map((note) => (
+
+										))} */}
+
+										<For
+											each={notesList}
+											fallback={
+												<VStack
+													textAlign="center"
+													fontWeight="medium"
+													color={"fg"}
+													p={8}
+												>
+													<Image
+														src="/illustrations/empty-notes.svg"
+														alt="No notes"
+														width={100}
+														height={100}
+													/>
+													<Text>
+														No notes to show, create one to get started!
+													</Text>
+												</VStack>
+											}
+										>
+											{(item, index) => (
+												<NoteSidebarItem
+													key={item._id}
+													note={item}
+													onRename={() => {
+														toast.error(`Feature not implemented`)
+													}}
+													onDuplicate={() => {
+														toast.error(`Feature not implemented`)
+													}}
+													onDelete={() => {
+														toast.error(`Feature not implemented`)
+													}}
+												/>
+											)}
+										</For>
 									</VStack>
 								</Collapsible.Content>
 							</Collapsible.Root>

@@ -5,15 +5,19 @@ import { UserButton as ClerkUserButton } from "@clerk/nextjs"
 
 type Props = {
 	isCollapsed?: boolean
+	className?: string
 }
 
-const UserButton = ({ isCollapsed }: Props) => {
+const UserButton = ({ isCollapsed, className }: Props) => {
 	return (
 		<Box
 			mt="auto"
 			w="full"
 			display="flex"
 			justifyContent={isCollapsed ? "center" : "flex-start"}
+			borderTop={"1.5px solid "}
+			borderColor={"gray.fg/10"}
+			pt={2}
 		>
 			<ClerkUserButton
 				appearance={{
