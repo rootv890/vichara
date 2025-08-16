@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./public/logo-light.svg" alt="VICHARA Logo" width="200" height="auto">
+</div>
+
 # VICHARA
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.4.6-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -7,6 +11,7 @@
 [![Clerk](https://img.shields.io/badge/Clerk-6.30.2-6C5CE7?style=for-the-badge&logo=clerk&logoColor=white)](https://clerk.com/)
 [![Chakra UI](https://img.shields.io/badge/Chakra_UI-3.24.2-319795?style=for-the-badge&logo=chakra-ui&logoColor=white)](https://chakra-ui.com/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Jotai](https://img.shields.io/badge/Jotai-2.13.1-FF6B35?style=for-the-badge&logo=jotai&logoColor=white)](https://jotai.org/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 > A modern, intuitive note-taking application that helps you capture, organize, and manage your thoughts with ease.
@@ -15,23 +20,52 @@
 
 - **🔐 Secure Authentication** - Powered by Clerk for seamless user management
 - **⚡ Real-time Sync** - Built with Convex for instant data synchronization
-- **🎨 Modern UI** - Beautiful interface using Chakra UI and Tailwind CSS
+- **🎨 Modern UI** - Beautiful interface using Chakra UI v3 and Tailwind CSS v4
 - **📱 Responsive Design** - Works perfectly on desktop and mobile devices
-- **🌙 Dark Mode** - Eye-friendly theme switching
+- **🌙 Dark Mode** - Eye-friendly theme switching with next-themes
 - **📝 Rich Text Editing** - Powerful note editing capabilities
 - **🔍 Smart Search** - Find your notes quickly and efficiently
-- **🏷️ Organization** - Tag and categorize your thoughts
+- **🏷️ Organization** - Tag and categorize your thoughts with Jotai state management
+- **🔔 Smart Notifications** - Real-time toast notifications with React Hot Toast
+- **⚡ Smooth Animations** - Beautiful loading states with ldrs
 
 ## 🚀 Tech Stack
 
+**Core Framework & Language**
+
 - **Frontend Framework**: [Next.js 15](https://nextjs.org/) with App Router
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Runtime**: [React 19](https://reactjs.org/)
+
+**Backend & Authentication**
+
 - **Backend**: [Convex](https://convex.dev/) - Real-time backend-as-a-service
 - **Authentication**: [Clerk](https://clerk.com/) - Complete user management
+
+**UI & Styling**
+
 - **UI Components**: [Chakra UI v3](https://chakra-ui.com/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Form Handling**: [React Hook Form](https://react-hook-form.com/) with Zod validation
+- **Theme Management**: [next-themes](https://github.com/pacocoursey/next-themes)
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
+
+**State Management & Forms**
+
+- **Global State**: [Jotai](https://jotai.org/) - Primitive and flexible state management
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/) with [Zod](https://zod.dev/) validation
+
+**User Experience**
+
+- **Notifications**: [React Hot Toast](https://react-hot-toast.com/)
+- **Loading Animations**: [ldrs](https://uiball.com/ldrs/)
+- **Date Handling**: [date-fns](https://date-fns.org/)
+
+**Development & Utilities**
+
 - **Package Manager**: [pnpm](https://pnpm.io/)
+- **Environment Management**: [T3 Env](https://env.t3.gg/)
+- **Utility Classes**: [clsx](https://github.com/lukeed/clsx), [tailwind-merge](https://github.com/dcastil/tailwind-merge)
+- **Development Tools**: [concurrently](https://github.com/open-cli-tools/concurrently)
 
 ## 📋 Prerequisites
 
@@ -141,8 +175,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Next.js](https://nextjs.org/) team for the amazing React framework
 - [Convex](https://convex.dev/) for the real-time backend platform
 - [Clerk](https://clerk.com/) for authentication solutions
-- [Chakra UI](https://chakra-ui.com/) for the component library
+- [Chakra UI](https://chakra-ui.com/) for the beautiful component library
 - [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
+- [Jotai](https://jotai.org/) for atomic state management
+- [React Hook Form](https://react-hook-form.com/) for form handling
+- [date-fns](https://date-fns.org/) for date utilities
+- [React Icons](https://react-icons.github.io/react-icons/) for the icon library
+- [ldrs](https://uiball.com/ldrs/) for loading animations
 
 ## 📞 Support
 
