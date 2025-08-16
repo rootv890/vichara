@@ -111,6 +111,7 @@ export const archive = mutation({
 			for (const child of childNotes) {
 				await ctx.db.patch(child._id, {
 					isArchived: true,
+					archivedAt: Date.now(),
 				})
 				await recursivelyArchive(child._id)
 			}
@@ -118,6 +119,7 @@ export const archive = mutation({
 
 		const note = await ctx.db.patch(args.id, {
 			isArchived: true,
+			archivedAt: Date.now(),
 		})
 		// Recursively archive child notes
 		await recursivelyArchive(args.id)
