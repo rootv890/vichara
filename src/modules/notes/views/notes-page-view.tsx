@@ -37,8 +37,6 @@ export const NotesPageView = ({}: Props) => {
 			// @ts-ignore will fix
 			createNote({
 				title: "New Note",
-				userId: user.id,
-				organizationId,
 			}),
 			{
 				loading: "Creating note...",

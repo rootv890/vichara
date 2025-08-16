@@ -67,3 +67,22 @@ body {
 .chakra-button[data-focus] {
 	box-shadow: none !important;
 }
+
+/* Hide scrollbars while preserving scroll (cross-browser) */
+.scrollbar-hidden {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hidden::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera */
+}
+
+/* Hide only horizontal scrollbar (apply to horizontal scroll containers) */
+.scrollbar-x-hidden {
+	/* Firefox hides scrollbar entirely for this element */
+	scrollbar-width: none;
+}
+.scrollbar-x-hidden::-webkit-scrollbar:horizontal {
+	display: none;
+	height: 0;
+}

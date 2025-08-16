@@ -1,9 +1,10 @@
 "use client"
 import { CgRename } from "react-icons/cg"
 
-import { processNoteIcon } from "@/lib/utils"
+import { cn, processNoteIcon } from "@/lib/utils"
 import { isSidebarCollapsed } from "@/modules/atoms"
 import {
+	Box,
 	Button,
 	EmptyState,
 	HStack,
@@ -123,24 +124,28 @@ const NoteSidebarItem = ({
 			},
 		})
 	}
+	const indent = level * 12
 	return (
-		<div
-			className="group/sidebaritem"
-			style={{
-				marginLeft: `${level * 12}px`,
-			}} // Indent based on level
-		>
+		<>
 			<HStack
 				gap={1}
-				bg={isActive ? "bg.emphasized" : "bg.muted"}
+				bg={isActive ? "gray.fg/30" : "transparent"}
 				_hover={{ bg: "bg" }}
 				transition="background 0.2s ease"
+				// Use margin-left for indent and subtract it from width to avoid clipping
+				// CSS var allows calc without re-rendering style strings everywhere
+				style={{ ["--indent" as any]: `${indent}px` }}
+				ms="var(--indent)"
 				rounded="md"
 				px={3}
 				py={1}
+				w={`calc(100% - var(--indent))`}
+				minW={0}
+				overflow="hidden"
 				align="center"
 				justify="space-between"
 				role="group"
+				className="group/sidebaritem"
 			>
 				<HStack
 					gap={1}
@@ -160,12 +165,6 @@ const NoteSidebarItem = ({
 							onClick={(e) => {
 								e.stopPropagation()
 								e.preventDefault()
-								console.log(
-									"Expanding note:",
-									note._id,
-									"Current expanded state:",
-									expanded
-								)
 								onExpand?.()
 							}}
 							_hover={{ bg: "bg.emphasized" }}
@@ -204,6 +203,8 @@ const NoteSidebarItem = ({
 					gap={1}
 					alignItems={"center"}
 					justify={"center"}
+					color={"fg"}
+					flexShrink={0}
 				>
 					<Button
 						size="xs"
@@ -239,13 +240,11 @@ const NoteSidebarItem = ({
 						</MenuTrigger>
 
 						<Portal>
-							<MenuPositioner
-								w="fit"
-								zIndex={1000}
-							>
+							<MenuPositioner w="fit">
 								<MenuContent
 									maxH="300px"
 									rounded="lg"
+									zIndex={999999}
 								>
 									<MenuItem
 										value="rename"
@@ -302,7 +301,7 @@ const NoteSidebarItem = ({
 				confirmDelete={confirmDelete}
 				setConfirmDelete={setConfirmDelete}
 			/>
-		</div>
+		</>
 	)
 }
 

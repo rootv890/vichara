@@ -1,9 +1,10 @@
 import { atomWithStorage } from "jotai/utils"
-import { atom } from "jotai/vanilla"
+
 import {
 	NOTES_EXPANDED_STORAGE_KEY,
 	ORGANIZATION_STORAGE_KEY,
 	SIDEBAR_STORAGE_KEY,
+	SIDEBAR_WIDTH_STORAGE_KEY,
 } from "./constants"
 
 export const isSidebarCollapsed = atomWithStorage(SIDEBAR_STORAGE_KEY, false)
@@ -15,4 +16,9 @@ export const organizationIdAtom = atomWithStorage<string | null>(
 export const expandedNotesAtom = atomWithStorage<Record<string, boolean>>(
 	NOTES_EXPANDED_STORAGE_KEY,
 	{}
+)
+
+export const sidebarWidthAtom = atomWithStorage<number>(
+	SIDEBAR_WIDTH_STORAGE_KEY,
+	280
 )

@@ -10,7 +10,6 @@ import { LuTrash2 } from "react-icons/lu"
 type Props = {}
 
 const Trash = (props: Props) => {
-	const isCollapsed = useAtomValue(isSidebarCollapsed)
 	const pathname = usePathname()
 	return (
 		<DestructiveButton
@@ -27,8 +26,8 @@ const Trash = (props: Props) => {
 			variant="ghost"
 			size="md"
 			gap={2}
-			flexDir={isCollapsed ? "column" : "row"}
-			justifyContent={isCollapsed ? "center" : "flex-start"}
+			flexDir={"row"}
+			justifyContent={"flex-start"}
 			alignItems="center"
 			fontWeight="medium"
 			asChild
@@ -38,7 +37,7 @@ const Trash = (props: Props) => {
 				className="w-full"
 			>
 				<LuTrash2 className="size-4" />
-				{isCollapsed ? null : "Trash"}
+				Trash
 			</Link>
 		</DestructiveButton>
 	)

@@ -1,5 +1,9 @@
 "use client"
-import { isSidebarCollapsed, useOrganization } from "@/modules/atoms"
+import {
+	isSidebarCollapsed,
+	sidebarWidthAtom,
+	useOrganization,
+} from "@/modules/atoms"
 import { Box, HStack } from "@chakra-ui/react"
 import { useAtomValue, useSetAtom } from "jotai/react"
 import React from "react"
@@ -15,6 +19,7 @@ export const NotesLayout = ({ children }: Props) => {
 	useOrganization()
 
 	const isSidebarOpen = useAtomValue(isSidebarCollapsed)
+	const sidebarWidth = useAtomValue(sidebarWidthAtom)
 	const setIsSidebarOpen = useSetAtom(isSidebarCollapsed)
 	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen)
@@ -47,6 +52,8 @@ export const NotesLayout = ({ children }: Props) => {
 					onClick={handleBackdropClick}
 					display={{ base: "block", md: "none" }}
 					transition="opacity 0.3s ease-in-out"
+					h="full"
+					w="full"
 				/>
 			)}
 
@@ -64,7 +71,7 @@ export const NotesLayout = ({ children }: Props) => {
 
 			{/* Main content */}
 			<Box
-				ml={{ base: 0, md: isSidebarOpen ? 0 : "280px" }}
+				ml={{ base: 0, md: isSidebarOpen ? 0 : sidebarWidth }}
 				h="100vh"
 				overflowY="auto"
 				transition="margin-left 0.3s ease-in-out"

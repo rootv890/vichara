@@ -50,15 +50,16 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 				className="w-full"
 				align="stretch"
 				gap={0.5}
-				ml={2} // Indent child notes
+				ml={4} // Indent child notes
 			>
 				<For
 					each={notes}
 					fallback={null}
 				>
-					{(item, index) => (
-						<Box key={item._id}>
+					{(item, _i) => (
+						<>
 							<NoteSidebarItem
+								key={item._id}
 								note={item}
 								onExpand={() => onExpand(item._id)}
 								expanded={expanded[item._id]}
@@ -70,7 +71,7 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 									parentNoteId={item._id}
 								/>
 							)}
-						</Box>
+						</>
 					)}
 				</For>
 			</VStack>
@@ -84,7 +85,9 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 			align="stretch"
 			gap={0}
 			flex={"1"}
+			minH={0}
 			overflowY={"auto"}
+			overflowX={"hidden"}
 		>
 			<Collapsible.Root defaultOpen={true}>
 				<Collapsible.Trigger asChild>
@@ -109,34 +112,51 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 						<GoTriangleRight />
 					</Button>
 				</Collapsible.Trigger>
-				<Collapsible.Content>
-					<VStack
-						className="w-full h-full"
-						align="stretch"
-						gap={0.5}
+				<Collapsible.Content
+					display="flex"
+					flexDir="column"
+					h="full"
+					minH={0}
+					overflowX="hidden"
+				>
+					<Box
+						className="scrollbar-x-hidden"
+						overflowX="auto"
+						w="full"
+						h="full"
+						flex={1}
 					>
-						<For
-							each={notes}
-							fallback={<EmptyNoteSidebarItem />}
+						<VStack
+							className="w-full h-full"
+							align="stretch"
+							gap={0.5}
+							pos={"relative"}
+							minW="max-content"
 						>
-							{(item, index) => (
-								<Box key={item._id}>
-									<NoteSidebarItem
-										note={item}
-										onExpand={() => onExpand(item._id)}
-										expanded={expanded[item._id]}
-										level={level}
-									/>
-									{expanded[item._id] && (
-										<SidebarList
-											level={level + 1}
-											parentNoteId={item._id}
+							<For
+								each={notes}
+								fallback={<EmptyNoteSidebarItem />}
+							>
+								{(item, index) => (
+									<>
+										<NoteSidebarItem
+											key={item._id}
+											note={item}
+											onExpand={() => onExpand(item._id)}
+											expanded={expanded[item._id]}
+											level={level}
 										/>
-									)}
-								</Box>
-							)}
-						</For>
-					</VStack>
+										{expanded[item._id] && (
+											<SidebarList
+												level={level + 1}
+												parentNoteId={item._id}
+											/>
+										)}
+									</>
+								)}
+							</For>
+						</VStack>
+					</Box>
 				</Collapsible.Content>
 			</Collapsible.Root>
 		</VStack>
