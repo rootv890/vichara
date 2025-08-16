@@ -13,6 +13,7 @@ export default defineSchema({
 		coverImage: v.optional(v.string()),
 		icon: v.optional(v.string()),
 		isPublished: v.boolean(),
+		archivedAt: v.optional(v.number()), // in milliseconds
 	})
 		.index("by_user", ["userId"])
 		.index("by_user_parent", ["userId", "parentNote"])

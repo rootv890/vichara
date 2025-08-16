@@ -8,7 +8,7 @@ import { useQuery } from "convex/react"
 import { useAtom, useAtomValue, useSetAtom } from "jotai/react"
 import { usePathname, useRouter } from "next/navigation"
 import React from "react"
-import toast from "react-hot-toast"
+
 import { FaHistory } from "react-icons/fa"
 import { GoTriangleRight } from "react-icons/go"
 import NoteSidebarItem, { EmptyNoteSidebarItem } from "./note-sidebar-item"
@@ -20,10 +20,7 @@ type Props = {
 
 const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 	const isCollapsed = useAtomValue(isSidebarCollapsed)
-	const router = useRouter()
-	const pathname = usePathname()
 
-	// const [expanded, setExpanded] = React.useState<Record<string, boolean>>({})
 	const expanded = useAtomValue(expandedNotesAtom)
 	const setExpanded = useSetAtom(expandedNotesAtom)
 

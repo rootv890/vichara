@@ -10,13 +10,17 @@ import {
 	Button,
 	Checkbox,
 	Container,
+	Heading,
 	Portal,
 	Table,
+	Text,
+	VStack,
 } from "@chakra-ui/react"
 import { api } from "@convex/_generated/api"
 
 import { Id } from "@convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
+import Image from "next/image"
 import { LuArchiveRestore, LuTrash2 } from "react-icons/lu"
 type Props = {}
 
@@ -115,10 +119,74 @@ const TrashList = (props: Props) => {
 				dangerouslySetInnerHTML={{ __html: processNoteIcon(item.icon) }}
 			/>
 			<Table.Cell>{item.title}</Table.Cell>
-
 			<Table.Cell className="">{toRelative(item._creationTime)}</Table.Cell>
+			<Table.Cell className="">
+				{toRelative(item.archivedAt ?? "N/A")}
+			</Table.Cell>
 		</Table.Row>
 	))
+
+	const header = (
+		<Table.Header
+			fontWeight={"bold"}
+			fontSize={"md"}
+		>
+			<Table.Row>
+				<Table.ColumnHeader w="3">
+					<Checkbox.Root
+						size="sm"
+						top="0.5"
+						aria-label="Select all rows"
+						checked={indeterminate ? "indeterminate" : selection.length > 0}
+						onCheckedChange={(changes) => {
+							// select all
+							setSelection(changes.checked ? items.map((item) => item._id) : [])
+						}}
+					>
+						<Checkbox.HiddenInput />
+						<Checkbox.Control />
+					</Checkbox.Root>
+				</Table.ColumnHeader>
+				<Table.ColumnHeader>Icon</Table.ColumnHeader>
+				<Table.ColumnHeader>Title</Table.ColumnHeader>
+				<Table.ColumnHeader>Last Modified</Table.ColumnHeader>
+				<Table.ColumnHeader>Archived At</Table.ColumnHeader>
+			</Table.Row>
+		</Table.Header>
+	)
+
+	// show no deletes Ayay!
+	if (items.length === 0) {
+		return (
+			<Table.Root>
+				{header}
+				<Table.Row>
+					<Table.Cell
+						colSpan={5}
+						textAlign="center"
+						h={"full"}
+						py={20}
+					>
+						<VStack>
+							<Image
+								src="/illustrations/empty-table.svg"
+								alt="No deleted notes"
+								width={200}
+								height={200}
+							/>
+							<Heading
+								mt={8}
+								fontSize={"xl"}
+								w={"1/2"}
+							>
+								Hurray!!! No deleted notes found.
+							</Heading>
+						</VStack>
+					</Table.Cell>
+				</Table.Row>
+			</Table.Root>
+		)
+	}
 
 	return (
 		<Container rounded={"lg"}>
@@ -131,30 +199,7 @@ const TrashList = (props: Props) => {
 				showColumnBorder
 				rounded={"lg"}
 			>
-				<Table.Header>
-					<Table.Row>
-						<Table.ColumnHeader w="3">
-							<Checkbox.Root
-								size="sm"
-								top="0.5"
-								aria-label="Select all rows"
-								checked={indeterminate ? "indeterminate" : selection.length > 0}
-								onCheckedChange={(changes) => {
-									// select all
-									setSelection(
-										changes.checked ? items.map((item) => item._id) : []
-									)
-								}}
-							>
-								<Checkbox.HiddenInput />
-								<Checkbox.Control />
-							</Checkbox.Root>
-						</Table.ColumnHeader>
-						<Table.ColumnHeader>Icon</Table.ColumnHeader>
-						<Table.ColumnHeader>Title</Table.ColumnHeader>
-						<Table.ColumnHeader>Last Modified</Table.ColumnHeader>
-					</Table.Row>
-				</Table.Header>
+				{header}
 				<Table.Body>{rows}</Table.Body>
 			</Table.Root>
 

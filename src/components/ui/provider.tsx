@@ -11,159 +11,114 @@ import { createSystem, defaultConfig, defineRecipe } from "@chakra-ui/react"
 
 export const buttonRecipe = defineRecipe({
 	base: {
-		borderRadius: "xl", // More modern rounded corners
-		fontWeight: "500", // Medium weight for better readability
-		transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)", // Smooth easing
+		borderRadius: "lg", // chunkier, but not pill
+		fontWeight: "600", // thicker, fun vibes
+		transition: "all 0.18s cubic-bezier(0.2, 0.8, 0.4, 1)", // playful ease
 		cursor: "pointer",
-		textAlign: "center",
 		display: "inline-flex",
 		alignItems: "center",
 		justifyContent: "center",
 		gap: "2",
 		outline: "none",
-		position: "relative",
-		overflow: "hidden",
 		userSelect: "none",
-		// Modern focus ring
+
 		_focusVisible: {
-			boxShadow: "0 0 0 2px {colors.bg}, 0 0 0 4px {colors.blue.500}",
+			boxShadow: "0 0 0 3px var(--chakra-colors-blue-400)",
 			outline: "none",
 		},
 		_disabled: {
 			opacity: 0.6,
 			cursor: "not-allowed",
-			pointerEvents: "none",
 		},
 	},
+
 	variants: {
 		variant: {
-			// Primary/Brand button - the main CTA
 			solid: {
 				bg: "gray.900",
 				color: "white",
-				border: "1px solid transparent",
 				_hover: {
 					bg: "gray.800",
-					transform: "translateY(-1px)",
-					boxShadow: "0 4px 8px rgba(0, 0, 0, 0.12)",
+					transform: "translateY(-1px) scale(1.02)", // duolingo bounce
 				},
 				_active: {
 					bg: "gray.700",
-					transform: "translateY(0)",
-					boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+					transform: "scale(0.98)",
 				},
 				_dark: {
 					bg: "white",
 					color: "gray.900",
-					_hover: {
-						bg: "gray.100",
-						transform: "translateY(-1px)",
-						boxShadow: "0 4px 8px rgba(255, 255, 255, 0.1)",
-					},
-					_active: {
-						bg: "gray.200",
-						transform: "translateY(0)",
-						boxShadow: "0 2px 4px rgba(255, 255, 255, 0.05)",
-					},
+					_hover: { bg: "gray.100", transform: "translateY(-1px) scale(1.02)" },
+					_active: { bg: "gray.200", transform: "scale(0.98)" },
 				},
 			},
-			// Secondary button - clean and minimal
+
 			subtle: {
 				bg: "bg.muted",
 				color: "fg",
-				border: "1px solid",
+				border: "2px solid", // duolingo = thicker
 				borderColor: "border.subtle",
 				_hover: {
 					bg: "bg.subtle",
 					borderColor: "border.emphasized",
-					transform: "translateY(-1px)",
-					boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+					transform: "translateY(-1px) scale(1.02)",
 				},
 				_active: {
 					bg: "bg.emphasized",
-					transform: "translateY(0)",
-					boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.1)",
+					transform: "scale(0.98)",
 				},
 			},
-			// Surface button - elevated feel
-			surface: {
-				bg: "bg.panel",
-				color: "fg",
-				border: "1px solid",
-				borderColor: "border.muted",
-				boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
-				_hover: {
-					bg: "bg.subtle",
-					borderColor: "border.subtle",
-					transform: "translateY(-1px)",
-					boxShadow: "0 4px 8px rgba(0, 0, 0, 0.08)",
-				},
-				_active: {
-					bg: "bg.muted",
-					transform: "translateY(0)",
-					boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.1)",
-				},
-			},
-			// Outline button - professional
+
 			outline: {
 				bg: "transparent",
 				color: "fg",
-				border: "1.5px solid",
+				border: "2px solid",
 				borderColor: "border.emphasized",
 				_hover: {
 					bg: "bg.subtle",
 					borderColor: "fg",
-					transform: "translateY(-1px)",
-					boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+					transform: "translateY(-1px) scale(1.02)",
 				},
 				_active: {
 					bg: "bg.muted",
-					borderColor: "fg",
-					transform: "translateY(0)",
+					transform: "scale(0.98)",
 				},
 			},
-			// Ghost button - minimal interaction
+
 			ghost: {
 				bg: "transparent",
 				color: "fg.muted",
-				border: "1px solid transparent",
+				border: "2px solid transparent",
 				_hover: {
 					bg: "bg.subtle",
 					color: "fg",
-					transform: "translateY(-1px)",
+					transform: "translateY(-1px) scale(1.02)",
 				},
 				_active: {
 					bg: "bg.muted",
-					transform: "translateY(0)",
+					transform: "scale(0.98)",
 				},
 			},
-			// Plain button - text-like
+
 			plain: {
 				bg: "transparent",
 				color: "fg.muted",
-				border: "none",
 				p: "0",
 				h: "auto",
 				minW: "auto",
-				_hover: {
-					color: "fg",
-					textDecoration: "underline",
-				},
-				_active: {
-					color: "fg.emphasized",
-				},
+				fontWeight: "500",
+				_hover: { color: "fg", textDecoration: "underline" },
+				_active: { color: "fg.emphasized" },
 			},
 		},
+
 		size: {
-			"2xs": { h: "6", px: "2", fontSize: "2xs", minW: "6", gap: "1" },
-			xs: { h: "7", px: "2.5", fontSize: "xs", minW: "7", gap: "1.5" },
-			sm: { h: "8", px: "3", fontSize: "sm", minW: "8", gap: "2" },
-			md: { h: "10", px: "4", fontSize: "sm", minW: "10", gap: "2" },
-			lg: { h: "11", px: "5", fontSize: "md", minW: "11", gap: "2.5" },
-			xl: { h: "12", px: "6", fontSize: "md", minW: "12", gap: "3" },
-			"2xl": { h: "14", px: "8", fontSize: "lg", minW: "14", gap: "3" },
+			sm: { h: "8", px: "3", fontSize: "sm", gap: "2" },
+			md: { h: "10", px: "4", fontSize: "md", gap: "2.5" }, // a bit chunkier
+			lg: { h: "12", px: "6", fontSize: "lg", gap: "3" },
 		},
 	},
+
 	defaultVariants: {
 		variant: "solid",
 		size: "md",

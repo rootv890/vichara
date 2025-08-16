@@ -353,7 +353,7 @@ const DeleteDialog = ({
 			size={"sm"}
 		>
 			<Portal>
-				<Dialog.Backdrop />
+				{/* <Dialog.Backdrop /> */}
 				<Dialog.Positioner>
 					<Dialog.Content
 						bg={"bg"}
@@ -383,8 +383,8 @@ const DeleteDialog = ({
 								<Button variant="outline">Cancel</Button>
 							</Dialog.ActionTrigger>
 							<Button
-								bg={"bg.warning"}
-								color={"fg.warning"}
+								bg={"red.subtle"}
+								color={"red.fg"}
 								onClick={() => {
 									onDelete?.()
 									setConfirmDelete(false)
