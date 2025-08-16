@@ -1,10 +1,11 @@
 "use client"
 import { ColorModeButton } from "@/components/ui/color-mode"
-import { organizationIdAtom } from "@/modules/atoms/atoms"
+import { useOrganization } from "@/modules/atoms"
 import {
 	Box,
 	Button,
 	Collapsible,
+	Flex,
 	For,
 	HStack,
 	Text,
@@ -13,18 +14,19 @@ import {
 import { useUser } from "@clerk/nextjs"
 import { api } from "@convex/_generated/api"
 import { useQuery } from "convex/react"
-import { useAtomValue } from "jotai/react"
 import { useTheme } from "next-themes"
 import Image from "next/image"
 import React from "react"
 import toast from "react-hot-toast"
+import { FaHistory } from "react-icons/fa"
 import { GoTriangleRight } from "react-icons/go"
 import { IoIosArrowBack } from "react-icons/io"
 import { LuPlus } from "react-icons/lu"
 import { TbMenu } from "react-icons/tb"
 import { useCreateNote } from "../../hooks/use-create-note"
-import NoteSidebarItem from "./note-sidebar-item"
+import NoteSidebarItem, { EmptyNoteSidebarItem } from "./note-sidebar-item"
 import OrganizationSwitcher from "./organization-switcher"
+import SearchButton from "./search"
 import UserButton from "./user-button"
 
 type Props = {
@@ -34,25 +36,25 @@ type Props = {
 
 const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 	const ref = React.useRef<HTMLDivElement>(null)
-	const organizationIdFromAtom = useAtomValue(organizationIdAtom)
+	const { organizationId } = useOrganization()
 	const { user } = useUser()
 	const { createNotePromise, isLoading, error } = useCreateNote()
 
-	const notesList = useQuery(
-		api.notes.getAll,
-		organizationIdFromAtom && user?.id
-			? { userId: user.id, organizationId: organizationIdFromAtom }
-			: "skip"
-	)
+	const notesList = useQuery(api.notes.getAll, {})
 
 	function handleNewNote() {
+		if (!organizationId || !user?.id) {
+			toast.error("Organization or user not found")
+			return
+		}
+
 		toast.promise(
 			// @ts-ignore will fix
 			createNotePromise({
 				title: "New Note",
 				// isArchived: false,
-				organizationId: organizationIdFromAtom!,
-				userId: user?.id!,
+				organizationId,
+				userId: user.id,
 			}),
 			{
 				loading: "Creating note...",
@@ -81,7 +83,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 			maxW={"300px"}
 			pos={"relative"}
 			h="100vh"
-			bg="bg.subtle"
+			bg="bg.muted"
 			borderRight="1px solid"
 			borderColor={"gray.fg/10"}
 			transition="width 0.3s ease"
@@ -119,6 +121,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					overflowY="auto"
 					w={"full"}
 				>
+					<SearchButton />
 					<Button
 						variant="subtle"
 						size="xs"
@@ -134,59 +137,46 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 						)}
 					</Button>
 
-					{!isCollapsed && (
+					{true && (
 						<VStack
 							className="w-full"
 							align="stretch"
 							gap={0}
+							flex={"1"}
+							overflowY={"auto"}
 						>
 							<Collapsible.Root defaultOpen={true}>
-								<Collapsible.Trigger
-									display={"flex"}
-									alignItems={"center"}
-									justifyContent={"space-between"}
-									color={"gray.fg"}
-									w={"full"}
-									gap={2}
-								>
-									<Text
-										fontSize="lg"
-										fontWeight={"bold"}
+								<Collapsible.Trigger asChild>
+									<Button
+										variant="ghost"
+										size="sm"
+										justifyContent="space-between"
+										w="full"
+										color="gray.fg"
+										fontWeight="medium"
+										px={2}
+										py={1}
 									>
-										Recent Notes
-									</Text>
-									<GoTriangleRight />
+										<Flex
+											justify={"start"}
+											alignItems={"center"}
+											gap={2}
+										>
+											<FaHistory />
+											{isCollapsed ? null : "Recent Notes"}
+										</Flex>
+										<GoTriangleRight />
+									</Button>
 								</Collapsible.Trigger>
 								<Collapsible.Content>
 									<VStack
-										className="w-full"
+										className="w-full h-full"
 										align="stretch"
-										gap={0}
+										gap={0.5}
 									>
-										{/* {notesList?.map((note) => (
-
-										))} */}
-
 										<For
 											each={notesList}
-											fallback={
-												<VStack
-													textAlign="center"
-													fontWeight="medium"
-													color={"fg"}
-													p={8}
-												>
-													<Image
-														src="/illustrations/empty-notes.svg"
-														alt="No notes"
-														width={100}
-														height={100}
-													/>
-													<Text>
-														No notes to show, create one to get started!
-													</Text>
-												</VStack>
-											}
+											fallback={<EmptyNoteSidebarItem />}
 										>
 											{(item, index) => (
 												<NoteSidebarItem

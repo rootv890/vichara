@@ -6,6 +6,7 @@ import { Provider as ChakraProvider } from "@/components/ui/provider"
 import { ClerkProvider, useAuth } from "@clerk/nextjs"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
+import { Provider as JotaiProvider } from "jotai/react"
 import { ReactNode } from "react"
 
 if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
@@ -16,16 +17,18 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL)
 
 export default function Providers({ children }: { children: ReactNode }) {
 	return (
-		<ConvexProviderWithClerk
-			client={convex}
-			useAuth={useAuth}
-		>
-			<ChakraProvider>
-				<ThemeProvider>
-					{/* TODO shift auth-guard to one layer down */}
-					{children}
-				</ThemeProvider>
-			</ChakraProvider>
-		</ConvexProviderWithClerk>
+		<JotaiProvider>
+			<ConvexProviderWithClerk
+				client={convex}
+				useAuth={useAuth}
+			>
+				<ChakraProvider>
+					<ThemeProvider>
+						{/* TODO shift auth-guard to one layer down */}
+						{children}
+					</ThemeProvider>
+				</ChakraProvider>
+			</ConvexProviderWithClerk>
+		</JotaiProvider>
 	)
 }

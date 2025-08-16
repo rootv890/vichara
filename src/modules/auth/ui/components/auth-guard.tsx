@@ -16,7 +16,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 		<>
 			<AuthLoading>
 				<AuthLayout>
-					<BouncyLoading label="Checking authentication..." />
+					<BouncyLoading label="Making sure everything is in order..." />
 				</AuthLayout>
 			</AuthLoading>
 			<Authenticated>{children}</Authenticated>

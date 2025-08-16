@@ -10,7 +10,7 @@
 	--color-foreground: var(--foreground);
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
-	--fonts-heading: var(--font-bricolage);
+	--font-heading: var(--font-bricolage);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -55,4 +55,9 @@ body {
 	content: "";
 	flex: 1; /* make them stretch */
 	border-top: 0.5px solid var(--color-zinc-300);
+}
+
+*:focus {
+	outline: none !important;
+	box-shadow: none !important;
 }

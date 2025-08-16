@@ -31,7 +31,9 @@ export const BouncyLoading = ({
 				speed={speed}
 				size={size}
 			/>
-			{label && <p>{label}</p>}
+			{label && (
+				<p className="text-foreground !text-xl !font-heading">{label}</p>
+			)}
 		</div>
 	)
 }

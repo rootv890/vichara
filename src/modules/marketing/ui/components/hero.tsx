@@ -51,15 +51,7 @@ export function HeroSection() {
 					align="center"
 					mb={12}
 				>
-					{theme === "dark" ? (
-						<Image
-							src={"/logo-white.svg"}
-							alt="Logo"
-							width={28}
-							height={28}
-							className={cn("transition-all ease-in-out duration-300 ")}
-						/>
-					) : (
+					{theme === "light" && (
 						<Image
 							src={"/logo-dark.svg"}
 							alt="Logo"
@@ -68,12 +60,20 @@ export function HeroSection() {
 							className={cn("transition-all ease-in-out duration-300 ")}
 						/>
 					)}
+					{theme === "dark" && (
+						<Image
+							src={"/logo-light.svg"}
+							alt="Logo"
+							width={28}
+							height={28}
+							className={cn("transition-all ease-in-out duration-300 ")}
+						/>
+					)}
 				</Flex>
-
 				{/* Main headline */}
 				<Heading
 					as="h1"
-					fontSize={["4xl", "5xl", "6xl", "7xl"]}
+					fontSize={["4xl", "5xl", "7xl", "8xl"]}
 					fontWeight="bold"
 					mb={6}
 					lineHeight="initial"

@@ -1,7 +1,7 @@
 "use client"
 
 import { BouncyLoading } from "@/components/loadings"
-import { organizationIdAtom } from "@/modules/atoms/atoms"
+import { useOrganization } from "@/modules/atoms"
 import {
 	Box,
 	Button,
@@ -14,7 +14,6 @@ import {
 import { useClerk, useUser } from "@clerk/nextjs"
 import { api } from "@convex/_generated/api"
 import { useAction, useMutation, useQuery } from "convex/react"
-import { useAtomValue, useSetAtom } from "jotai/react"
 import Image from "next/image"
 import React from "react"
 import { toast } from "react-hot-toast"
@@ -25,41 +24,12 @@ type Props = {}
 
 export const NotesPageView = ({}: Props) => {
 	const { user } = useUser()
-	const { organization } = useClerk()
+	const { organizationId } = useOrganization()
 	const { createNote, isLoading, error } = useCreateNote()
-
-	// jotai hooks
-	const organizationIdFromAtom = useAtomValue(organizationIdAtom)
-	const setOrganizationId = useSetAtom(organizationIdAtom)
-	const validateOrganization = useAction(api.organizations.validate)
-
-	React.useEffect(() => {
-		if (!organization) {
-			setOrganizationId(null)
-			return
-		}
-
-		const organizationId = organization.id
-
-		validateOrganization({ organizationId })
-			.then((result) => {
-				if (!result.valid) {
-					console.error("Organization validation failed:", result)
-					toast.error(result.reason || "Organization validation failed")
-					setOrganizationId(null)
-				} else {
-					setOrganizationId(organizationId)
-				}
-			})
-			.catch((error) => {
-				toast.error("Failed to validate organization: " + error.message)
-				setOrganizationId(null)
-			})
-	}, [organization, validateOrganization, setOrganizationId])
 
 	// Handle create Note
 	const handleCreateNote = async () => {
-		if (!user || !organizationIdFromAtom) {
+		if (!user || !organizationId) {
 			toast.error("User or organization not found")
 			return
 		}
@@ -68,7 +38,7 @@ export const NotesPageView = ({}: Props) => {
 			createNote({
 				title: "New Note",
 				userId: user.id,
-				organizationId: organizationIdFromAtom,
+				organizationId,
 			}),
 			{
 				loading: "Creating note...",

@@ -44,26 +44,25 @@ function MarketingNavbar({}: Props) {
 					alignItems={"center"}
 					justify={"center"}
 				>
-					<Image
-						src={"/logo-white.svg"}
-						alt="Logo"
-						width={32}
-						height={32}
-						className={cn(
-							"transition-all ease-in-out duration-300 ",
-							theme === "light" && "!hidden"
-						)}
-					/>
-					<Image
-						src={"/logo-dark.svg"}
-						alt="Logo"
-						width={32}
-						height={32}
-						className={cn(
-							"transition-all ease-in-out duration-300 ",
-							theme === "dark" && "!hidden"
-						)}
-					/>
+					{theme === "light" && (
+						<Image
+							src={"/logo-dark.svg"}
+							alt="Logo"
+							width={32}
+							height={32}
+							className={cn("transition-all ease-in-out duration-300 ")}
+						/>
+					)}
+					{theme === "dark" && (
+						<Image
+							src={"/logo-light.svg"}
+							alt="Logo"
+							width={32}
+							height={32}
+							className={cn("transition-all ease-in-out duration-300 ")}
+						/>
+					)}
+
 					<Text
 						fontFamily={"var(--font-bricolage)"}
 						fontWeight={"bold"}

@@ -1,7 +1,9 @@
 "use client"
 
+import { processNoteIcon } from "@/lib/utils"
+import { isSidebarCollapsed } from "@/modules/atoms"
 import {
-	Button,
+	EmptyState,
 	HStack,
 	IconButton,
 	LinkBox,
@@ -14,10 +16,14 @@ import {
 	MenuRoot,
 	MenuSeparator,
 	MenuTrigger,
+	Portal,
 	Span,
 	Text,
+	VStack,
 } from "@chakra-ui/react"
 import { Doc } from "@convex/_generated/dataModel"
+import { useAtomValue } from "jotai/react"
+import Image from "next/image"
 import NextLink from "next/link"
 import { IoEllipsisHorizontalSharp } from "react-icons/io5"
 
@@ -29,19 +35,21 @@ type Props = {
 }
 
 const NoteSidebarItem = ({ note, onRename, onDuplicate, onDelete }: Props) => {
+	const isCollapsed = useAtomValue(isSidebarCollapsed)
 	return (
 		<LinkBox
 			role="group"
-			rounded="xl"
+			rounded="md"
 			px={3}
 			py={1}
-			bg="bg.subtle"
-			_hover={{ bg: "bg.muted" }}
+			bg="bg.muted"
+			_hover={{ bg: "bg" }}
 			transition="background 0.2s ease"
 			display="flex"
 			alignItems="center"
 			justifyContent="space-between"
 			_focusWithin={{ outline: "2px solid", outlineColor: "gray.focusRing" }}
+			className="group/sidebaritem"
 		>
 			<HStack
 				gap={3}
@@ -56,8 +64,18 @@ const NoteSidebarItem = ({ note, onRename, onDuplicate, onDelete }: Props) => {
 					truncate
 				>
 					<LinkOverlay asChild>
-						<NextLink href={`/notes/${note._id}`}>
-							<Text fontSize={"sm"}>{note.title ?? "Untitled"}</Text>
+						<NextLink
+							href={`/notes/${note._id}`}
+							className="flex items-center justify-start gap-2"
+						>
+							<Text
+								as="span"
+								fontSize="xs"
+								dangerouslySetInnerHTML={{ __html: processNoteIcon(note.icon) }}
+							/>
+							{!isCollapsed && (
+								<Text fontSize={"sm"}>{note.title ?? "Untitled"}</Text>
+							)}
 						</NextLink>
 					</LinkOverlay>
 				</Span>
@@ -68,62 +86,86 @@ const NoteSidebarItem = ({ note, onRename, onDuplicate, onDelete }: Props) => {
 					<IconButton
 						aria-label="More actions"
 						size="xs"
-						padding={"1"}
+						padding={"2"}
 						variant="ghost"
 						opacity={1}
-						w={"fit"}
-						_groupHover={{ opacity: 1 }}
+						h={"16px"}
 						_hover={{ bg: "bg.emphasized" }}
-						transition="opacity 0.15s ease"
+						transition="all 0.15s ease"
 						onClick={(e) => {
 							e.stopPropagation()
-							// e.preventDefault()
 						}} // prevent link navigation
 					>
-						<IoEllipsisHorizontalSharp className="size-5" />{" "}
+						<IoEllipsisHorizontalSharp className="size-3 group-hover/sidebaritem:opacity-100 opacity-0" />{" "}
 					</IconButton>
 				</MenuTrigger>
 
-				<MenuPositioner>
-					<MenuContent rounded={"lg"}>
-						<MenuItem
-							value="rename"
-							onClick={() => {
-								onRename?.()
-							}}
+				<Portal>
+					<MenuPositioner
+						w="fit"
+						zIndex={1000}
+					>
+						<MenuContent
+							maxH="300px"
+							rounded="lg"
 						>
-							Rename
-						</MenuItem>
-
-						<MenuItemGroup>
 							<MenuItem
-								value="duplicate"
-								onClick={() => {
-									onDuplicate?.()
-								}}
+								value="rename"
+								onClick={onRename}
 							>
-								Duplicate
+								Rename
 							</MenuItem>
-						</MenuItemGroup>
 
-						<MenuSeparator />
-						<MenuArrow />
+							<MenuItemGroup>
+								<MenuItem
+									value="duplicate"
+									onClick={onDuplicate}
+								>
+									Duplicate
+								</MenuItem>
+							</MenuItemGroup>
 
-						<MenuItem
-							value="delete"
-							color="red.fg"
-							_hover={{ bg: "red.500/50" }}
-							onClick={() => {
-								onDelete?.()
-							}}
-						>
-							Delete
-						</MenuItem>
-					</MenuContent>
-				</MenuPositioner>
+							<MenuSeparator />
+							<MenuArrow />
+
+							<MenuItem
+								value="delete"
+								color="red.fg"
+								_hover={{ bg: "red.500/50" }}
+								onClick={onDelete}
+							>
+								Delete
+							</MenuItem>
+						</MenuContent>
+					</MenuPositioner>
+				</Portal>
 			</MenuRoot>
 		</LinkBox>
 	)
 }
 
 export default NoteSidebarItem
+
+export const EmptyNoteSidebarItem = () => {
+	return (
+		<EmptyState.Root
+			color={"fg"}
+			textAlign={"center"}
+		>
+			<EmptyState.Content gap={2}>
+				<EmptyState.Indicator>
+					<Image
+						src="/illustrations/empty-notes.svg"
+						alt="No notes"
+						width={100}
+						height={100}
+					/>
+				</EmptyState.Indicator>
+				<EmptyState.Title>No notes to show</EmptyState.Title>
+				<EmptyState.Description>
+					Create one to get started!
+				</EmptyState.Description>
+			</EmptyState.Content>
+		</EmptyState.Root>
+	)
+}

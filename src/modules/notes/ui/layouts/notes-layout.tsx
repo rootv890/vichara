@@ -1,8 +1,8 @@
 "use client"
-import { isSidebarCollapsed } from "@/modules/atoms/atoms"
+import { isSidebarCollapsed, useOrganization } from "@/modules/atoms"
 import { Box, HStack } from "@chakra-ui/react"
-import { useAtom, useAtomValue, useSetAtom } from "jotai/react"
-import React, { useState } from "react"
+import { useAtomValue, useSetAtom } from "jotai/react"
+import React from "react"
 import NotesSidebar from "../components/notes-sidebar"
 
 type Props = {
@@ -10,6 +10,9 @@ type Props = {
 }
 
 export const NotesLayout = ({ children }: Props) => {
+	// Initialize organization state management
+	useOrganization()
+
 	const isSidebarOpen = useAtomValue(isSidebarCollapsed)
 	const setIsSidebarOpen = useSetAtom(isSidebarCollapsed)
 	const toggleSidebar = () => {
