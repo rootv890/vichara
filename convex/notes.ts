@@ -1,6 +1,6 @@
 import { UserIdentity } from "convex/server"
 import { v } from "convex/values"
-import { Id } from "./_generated/dataModel"
+import { Doc, Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import { requireIdentity, requireIdentityAndOrg } from "./_helpers/identity"
 
@@ -37,7 +37,6 @@ export const getAll = query({
 		const userId = identity.subject
 		const notes = ctx.db
 			.query("notes")
-
 			.withIndex("by_user_parent", (q) =>
 				q.eq("userId", userId).eq("parentNote", args.parentNote)
 			)
@@ -123,5 +122,111 @@ export const archive = mutation({
 		// Recursively archive child notes
 		await recursivelyArchive(args.id)
 		return note
+	},
+})
+
+export const getTrash = query({
+	async handler(ctx) {
+		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
+		const userId = identity.subject
+
+		const notes = await ctx.db
+			.query("notes")
+			.withIndex("by_user_organization", (q) =>
+				q.eq("userId", userId).eq("organizationId", organizationId)
+			)
+			.filter((q) =>
+				q.and(
+					q.eq(q.field("userId"), userId),
+					q.eq(q.field("organizationId"), organizationId),
+					q.eq(q.field("isArchived"), true)
+				)
+			)
+			.order("desc")
+			.collect()
+
+		return notes
+	},
+})
+
+export const restoreFromTrash = mutation({
+	args: {
+		id: v.id("notes"),
+	},
+	async handler(ctx, args) {
+		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
+		const userId = identity.subject
+
+		const existingNote = await ctx.db.get(args.id)
+
+		if (!existingNote) {
+			throw new Error("Note not found")
+		}
+
+		if (existingNote.userId !== userId) {
+			throw new Error("Unauthorized")
+		}
+
+		if (existingNote.organizationId !== organizationId) {
+			throw new Error("Unauthorized")
+		}
+
+		const updatedNote = await ctx.db.patch(args.id, {
+			isArchived: false,
+		})
+
+		const recursivelyRestore = async (noteId: Id<"notes">) => {
+			const childNotes = await ctx.db
+				.query("notes")
+				.withIndex("by_user_parent", (q) =>
+					q.eq("userId", userId).eq("parentNote", noteId)
+				)
+				.collect()
+
+			for (const child of childNotes) {
+				await ctx.db.patch(child._id, {
+					isArchived: false,
+				})
+				// for its child
+				await recursivelyRestore(child._id)
+			}
+		}
+
+		// recursively restore parent notes if they are archived
+		const options: Partial<Doc<"notes">> = {
+			isArchived: false,
+		}
+		if (existingNote.parentNote) {
+			const parent = await ctx.db.get(existingNote.parentNote)
+			if (parent && parent.isArchived) {
+				await ctx.db.patch(parent._id, options)
+			}
+		}
+		recursivelyRestore(existingNote._id)
+		return updatedNote
+	},
+})
+
+export const deleteNotePermanently = mutation({
+	args: {
+		id: v.id("notes"),
+	},
+	async handler(ctx, args) {
+		const identity = await requireIdentity(ctx)
+		const userId = identity.subject
+
+		const existingNote = await ctx.db.get(args.id)
+
+		if (!existingNote) {
+			throw new Error("Note not found")
+		}
+
+		if (existingNote.userId !== userId) {
+			throw new Error("Unauthorized")
+		}
+
+		await ctx.db.delete(args.id)
+
+		return existingNote
 	},
 })

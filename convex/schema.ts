@@ -16,5 +16,5 @@ export default defineSchema({
 	})
 		.index("by_user", ["userId"])
 		.index("by_user_parent", ["userId", "parentNote"])
-		.index("by_user_organization", ["organizationId", "userId"]),
+		.index("by_user_organization", ["userId", "organizationId"]),
 })

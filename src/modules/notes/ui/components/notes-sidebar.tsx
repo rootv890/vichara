@@ -1,7 +1,8 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
 import { useOrganization } from "@/modules/atoms"
-import { Box, Button, HStack, Text, VStack } from "@chakra-ui/react"
+import { Box, HStack, Text, VStack } from "@chakra-ui/react"
 import { useUser } from "@clerk/nextjs"
 import React from "react"
 import toast from "react-hot-toast"
@@ -9,9 +10,11 @@ import { IoIosArrowBack } from "react-icons/io"
 import { LuPlus } from "react-icons/lu"
 import { TbMenu } from "react-icons/tb"
 import { useCreateNote } from "../../hooks/use-create-note"
+import NoteSidebarItem from "./note-sidebar-item"
 import OrganizationSwitcher from "./organization-switcher"
 import SidebarList from "./sidebar-list"
 import SidebarSearchButton from "./sidebar-search"
+import Trash from "./trash"
 import UserButton from "./user-button"
 
 type Props = {
@@ -94,7 +97,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					<Button
 						size="sm"
 						variant="ghost"
-						p="4px"
+						p="1"
 						onClick={onToggle}
 						aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
 					>
@@ -112,17 +115,18 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				>
 					<SidebarSearchButton />
 					<Button
-						variant="subtle"
-						size="xs"
+						variant="surface"
+						size="sm"
 						aria-label="New Note"
 						title="New Note"
-						rounded={"l3"}
+						border={"none"}
 						onClick={handleNewNote}
 						disabled={isLoading}
-						display={"flex"}
-						justifyContent={"flex-start"}
-						alignItems={"center"}
+						display="flex"
+						justifyContent="flex-start"
+						alignItems="center"
 						gap={3}
+						w="full"
 					>
 						<LuPlus />{" "}
 						{!isCollapsed && (
@@ -134,6 +138,8 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				</VStack>
 
 				{/* User section */}
+				{/* Trash */}
+				<Trash />
 				<UserButton isCollapsed={isCollapsed} />
 			</VStack>
 			{/* Sidebar Rail */}

@@ -34,3 +34,26 @@ export function processNoteIcon(icon: string | null | undefined): string {
 	// Otherwise treat as text string (could be a Lucide/Feather icon name later)
 	return `<span style="font-size:14px">${icon}</span>`
 }
+
+import { format, formatDistanceToNow, isValid } from "date-fns"
+type Input = number | string | Date
+export function toDate(value: Input): Date | null {
+	const d =
+		typeof value === "number"
+			? new Date(value)
+			: typeof value === "string"
+			? new Date(value)
+			: value
+	return isValid(d) ? d : null
+}
+export function toRelative(value: Input, now: Date = new Date()) {
+	const d = toDate(value)
+	if (!d) return "—"
+	return formatDistanceToNow(d, { addSuffix: true })
+}
+
+export function toAbsolute(value: Input) {
+	const d = toDate(value)
+	if (!d) return "—"
+	return format(d, "PPpp")
+}
