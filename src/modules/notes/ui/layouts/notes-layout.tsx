@@ -3,6 +3,7 @@ import { isSidebarCollapsed, useOrganization } from "@/modules/atoms"
 import { Box, HStack } from "@chakra-ui/react"
 import { useAtomValue, useSetAtom } from "jotai/react"
 import React from "react"
+import FloatingSidebarToggle from "../components/floating-sidebar-toggle"
 import NotesSidebar from "../components/notes-sidebar"
 
 type Props = {
@@ -19,25 +20,57 @@ export const NotesLayout = ({ children }: Props) => {
 		setIsSidebarOpen(!isSidebarOpen)
 	}
 
+	// Close sidebar when clicking backdrop on mobile
+	const handleBackdropClick = () => {
+		if (window.innerWidth < 768) {
+			setIsSidebarOpen(true) // true means collapsed/closed
+		}
+	}
+
 	return (
-		<HStack
+		<Box
 			h="100vh"
-			align="stretch"
-			gap={0}
 			overflow="hidden"
 			bg="bg.subtle"
+			position="relative"
 		>
+			{/* Backdrop - only visible on smaller screens when sidebar is open */}
+			{!isSidebarOpen && (
+				<Box
+					position="fixed"
+					top={0}
+					left={0}
+					right={0}
+					bottom={0}
+					bg="blackAlpha.500"
+					zIndex={1100}
+					onClick={handleBackdropClick}
+					display={{ base: "block", md: "none" }}
+					transition="opacity 0.3s ease-in-out"
+				/>
+			)}
+
+			{/* Floating toggle button - only visible when sidebar is collapsed */}
+			<FloatingSidebarToggle
+				onToggle={toggleSidebar}
+				isVisible={isSidebarOpen}
+			/>
+
+			{/* Sidebar */}
 			<NotesSidebar
 				isCollapsed={isSidebarOpen}
 				onToggle={toggleSidebar}
 			/>
+
+			{/* Main content */}
 			<Box
-				flex={1}
+				ml={{ base: 0, md: isSidebarOpen ? 0 : "280px" }}
 				h="100vh"
 				overflowY="auto"
+				transition="margin-left 0.3s ease-in-out"
 			>
 				{children}
 			</Box>
-		</HStack>
+		</Box>
 	)
 }

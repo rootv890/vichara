@@ -62,15 +62,17 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 	return (
 		<Box
 			ref={ref}
-			w={isCollapsed ? "60px" : "full"}
-			maxW={"20vw"}
-			pos={"relative"}
+			w="280px" // Fixed width for consistent behavior
+			pos="fixed" // Changed to fixed positioning
+			top={0}
+			left={0}
 			h="100vh"
 			bg="bg.muted"
 			borderRight="1px solid"
 			borderColor={"gray.fg/10"}
-			transition="all 0.3s linear"
-			flexShrink={0}
+			transition="transform 0.3s ease-in-out"
+			transform={isCollapsed ? "translateX(-100%)" : "translateX(0)"}
+			zIndex={1200}
 			p={2}
 			css={{
 				"--text-color": "colors.fg",
@@ -93,15 +95,15 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					borderBottom={"1px solid"}
 					borderColor={"gray.fg/10"}
 				>
-					<OrganizationSwitcher isCollapsed={isCollapsed} />
+					<OrganizationSwitcher isCollapsed={false} />
 					<Button
 						size="sm"
 						variant="ghost"
 						p="1"
 						onClick={onToggle}
-						aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+						aria-label="Close sidebar"
 					>
-						{isCollapsed ? <TbMenu className="size-6" /> : <IoIosArrowBack />}
+						<IoIosArrowBack />
 					</Button>
 				</HStack>
 
@@ -129,9 +131,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 						w="full"
 					>
 						<LuPlus />{" "}
-						{!isCollapsed && (
-							<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
-						)}
+						<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
 					</Button>
 					{/* list={notesList || []} */}
 					{true && <SidebarList />}
@@ -140,19 +140,8 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				{/* User section */}
 				{/* Trash */}
 				<Trash />
-				<UserButton isCollapsed={isCollapsed} />
+				<UserButton isCollapsed={false} />
 			</VStack>
-			{/* Sidebar Rail */}
-			<Box
-				pos="absolute"
-				top={0}
-				right={0}
-				h="full"
-				w="3px" // rail thickness
-				cursor={isCollapsed ? "e-resize" : "w-resize"}
-				_hover={{ bg: "gray.200", _dark: { bg: "gray.700" } }}
-				onClick={onToggle}
-			/>
 		</Box>
 	)
 }

@@ -1,10 +1,13 @@
 import { api } from "@convex/_generated/api"
-import { Doc } from "@convex/_generated/dataModel"
+import { Id } from "@convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import type { WithoutSystemFields } from "convex/server"
 import React from "react"
 
-type CreateNoteInput = WithoutSystemFields<Doc<"notes">>
+// Input type matching the mutation args
+type CreateNoteInput = {
+	title: string
+	parentNote?: Id<"notes">
+}
 
 export const useCreateNote = () => {
 	const mutation = useMutation(api.notes.create)

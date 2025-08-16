@@ -16,9 +16,9 @@ const Trash = (props: Props) => {
 		<DestructiveButton
 			mt="auto"
 			w="full"
-			bg={pathname.includes("/notes/trash") ? "bg" : "transparent"}
+			bg={"bg"}
 			borderColor={pathname.includes("/notes/trash") ? "fg" : "transparent"}
-			color={pathname.includes("/notes/trash") ? "fg" : "inherit"}
+			color={"fg"}
 			_hover={{
 				bg: "bg.subtle",
 				color: "fg.warning",
