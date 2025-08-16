@@ -1,7 +1,8 @@
 import { UserIdentity } from "convex/server"
 import { v } from "convex/values"
+import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import { requireIdentityAndOrg } from "./_helpers/identity"
+import { requireIdentity, requireIdentityAndOrg } from "./_helpers/identity"
 
 export const create = mutation({
 	args: {
@@ -25,20 +26,6 @@ export const create = mutation({
 		return newNote
 	},
 })
-
-// GET One
-
-// export const getOne = query({
-// 	args: {
-// 		id: v.string(),
-// 		organizationId: v.string(),
-// 	},
-// 	async handler(ctx, args) {
-// 		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
-// 		const userId = identity.subject
-// 		const note = await ctx.db.get(args.id)
-// 	},
-// })
 
 export const getAll = query({
 	args: {
@@ -92,5 +79,49 @@ export const hasChildren = query({
 			.first()
 
 		return !!childNote
+	},
+})
+
+export const archive = mutation({
+	args: {
+		id: v.id("notes"),
+	},
+	async handler(ctx, args) {
+		const identity = await requireIdentity(ctx)
+		const userId = identity.subject
+
+		const currentNote = await ctx.db.get(args.id)
+
+		if (!currentNote) {
+			throw new Error("Note not found")
+		}
+
+		if (currentNote.userId !== userId) {
+			throw new Error("Unauthorized")
+		}
+
+		const recursivelyArchive = async (noteId: Id<"notes">) => {
+			// recursively archive all child notes
+			const childNotes = await ctx.db
+				.query("notes")
+				.withIndex("by_user_parent", (q) =>
+					q.eq("userId", userId).eq("parentNote", noteId)
+				)
+				.collect()
+
+			for (const child of childNotes) {
+				await ctx.db.patch(child._id, {
+					isArchived: true,
+				})
+				await recursivelyArchive(child._id)
+			}
+		}
+
+		const note = await ctx.db.patch(args.id, {
+			isArchived: true,
+		})
+		// Recursively archive child notes
+		await recursivelyArchive(args.id)
+		return note
 	},
 })

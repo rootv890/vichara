@@ -1,33 +1,17 @@
 "use client"
-import { ColorModeButton } from "@/components/ui/color-mode"
+
 import { useOrganization } from "@/modules/atoms"
-import {
-	Box,
-	Button,
-	Collapsible,
-	Flex,
-	For,
-	HStack,
-	Text,
-	VStack,
-} from "@chakra-ui/react"
+import { Box, Button, HStack, Text, VStack } from "@chakra-ui/react"
 import { useUser } from "@clerk/nextjs"
-import { api } from "@convex/_generated/api"
-import { useQuery } from "convex/react"
-import { useTheme } from "next-themes"
-import Image from "next/image"
 import React from "react"
 import toast from "react-hot-toast"
-import { FaHistory } from "react-icons/fa"
-import { GoTriangleRight } from "react-icons/go"
 import { IoIosArrowBack } from "react-icons/io"
 import { LuPlus } from "react-icons/lu"
 import { TbMenu } from "react-icons/tb"
 import { useCreateNote } from "../../hooks/use-create-note"
-import NoteSidebarItem, { EmptyNoteSidebarItem } from "./note-sidebar-item"
 import OrganizationSwitcher from "./organization-switcher"
-import SearchButton from "./search"
 import SidebarList from "./sidebar-list"
+import SidebarSearchButton from "./sidebar-search"
 import UserButton from "./user-button"
 
 type Props = {
@@ -75,14 +59,14 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 	return (
 		<Box
 			ref={ref}
-			w={isCollapsed ? "60px" : "fit"}
-			maxW={"300px"}
+			w={isCollapsed ? "60px" : "full"}
+			maxW={"20vw"}
 			pos={"relative"}
 			h="100vh"
 			bg="bg.muted"
 			borderRight="1px solid"
 			borderColor={"gray.fg/10"}
-			transition="width 0.3s ease"
+			transition="all 0.3s linear"
 			flexShrink={0}
 			p={2}
 			css={{
@@ -101,7 +85,10 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					justify="space-between"
 					align="center"
 					p={0}
+					pb={1}
 					borderRadius="md"
+					borderBottom={"1px solid"}
+					borderColor={"gray.fg/10"}
 				>
 					<OrganizationSwitcher isCollapsed={isCollapsed} />
 					<Button
@@ -123,7 +110,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					overflowY="auto"
 					w={"full"}
 				>
-					<SearchButton />
+					<SidebarSearchButton />
 					<Button
 						variant="subtle"
 						size="xs"
@@ -132,6 +119,10 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 						rounded={"l3"}
 						onClick={handleNewNote}
 						disabled={isLoading}
+						display={"flex"}
+						justifyContent={"flex-start"}
+						alignItems={"center"}
+						gap={3}
 					>
 						<LuPlus />{" "}
 						{!isCollapsed && (

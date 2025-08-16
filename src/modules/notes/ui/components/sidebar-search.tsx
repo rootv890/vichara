@@ -11,7 +11,7 @@ import {
 import { useAtomValue } from "jotai/react"
 import { LuSearch } from "react-icons/lu"
 
-const SearchButton = () => {
+const SidebarSearchButton = () => {
 	const isSidebarOpen = useAtomValue(isSidebarCollapsed)
 
 	// Safe platform detection
@@ -29,13 +29,15 @@ const SearchButton = () => {
 			<Show when={!isSidebarOpen}>
 				<InputGroup
 					startElement={<LuSearch />}
-					endElement={<Kbd>{metaKey}K</Kbd>}
+					endElement={<Kbd>{metaKey} k</Kbd>}
 				>
 					<Input
 						placeholder="Search notes"
 						variant="subtle"
+						rounded={"xl"}
 						size="sm"
 						height={"40px"}
+						color={"fg"}
 						bg="bg.emphasized"
 						_focus={{
 							outline: "none",
@@ -52,6 +54,7 @@ const SearchButton = () => {
 					variant="subtle"
 					size="xs"
 					title="Search"
+					color={"fg"}
 					rounded={"l3"}
 					_hover={{
 						bg: "bg.emphasized",
@@ -65,4 +68,4 @@ const SearchButton = () => {
 	)
 }
 
-export default SearchButton
+export default SidebarSearchButton

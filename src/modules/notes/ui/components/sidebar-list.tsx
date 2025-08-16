@@ -1,11 +1,11 @@
 "use client"
-import { BouncyLoading } from "@/components/loadings"
-import { isSidebarCollapsed } from "@/modules/atoms/atoms"
+import { BouncyLoading, CardioLoading } from "@/components/loadings"
+import { expandedNotesAtom, isSidebarCollapsed } from "@/modules/atoms/atoms"
 import { Box, Button, Collapsible, Flex, For, VStack } from "@chakra-ui/react"
 import { api } from "@convex/_generated/api"
 import { Doc, Id } from "@convex/_generated/dataModel"
 import { useQuery } from "convex/react"
-import { useAtomValue } from "jotai/react"
+import { useAtom, useAtomValue, useSetAtom } from "jotai/react"
 import { usePathname, useRouter } from "next/navigation"
 import React from "react"
 import toast from "react-hot-toast"
@@ -23,21 +23,17 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 	const router = useRouter()
 	const pathname = usePathname()
 
-	const [expanded, setExpanded] = React.useState<Record<string, boolean>>({})
+	// const [expanded, setExpanded] = React.useState<Record<string, boolean>>({})
+	const expanded = useAtomValue(expandedNotesAtom)
+	const setExpanded = useSetAtom(expandedNotesAtom)
 
 	const onExpand = (noteId: string) => {
-		console.log(
-			"onExpand called for noteId:",
-			noteId,
-			"Current expanded state:",
-			expanded
-		)
 		setExpanded((prevExp) => {
 			const newExpanded = {
 				...prevExp,
-				[noteId]: !prevExp[noteId],
+				[noteId]: prevExp[noteId] === undefined ? true : !prevExp[noteId],
 			}
-			console.log("New expanded state:", newExpanded)
+
 			return newExpanded
 		})
 	}
@@ -46,12 +42,8 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 		parentNote: parentNoteId,
 	})
 
-	const onRedirect = (noteId: string) => {
-		router.push(`/notes/${noteId}`)
-	}
-
 	if (notes === undefined) {
-		return <BouncyLoading label="Loading notes..." />
+		return <CardioLoading label="Loading notes bro..." />
 	}
 
 	// If this is a recursive call (level > 0), don't show the collapsible wrapper
@@ -71,15 +63,6 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 						<Box key={item._id}>
 							<NoteSidebarItem
 								note={item}
-								onRename={() => {
-									toast.error(`Feature not implemented`)
-								}}
-								onDuplicate={() => {
-									toast.error(`Feature not implemented`)
-								}}
-								onDelete={() => {
-									toast.error(`Feature not implemented`)
-								}}
 								onExpand={() => onExpand(item._id)}
 								expanded={expanded[item._id]}
 								level={level}
@@ -143,15 +126,6 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 								<Box key={item._id}>
 									<NoteSidebarItem
 										note={item}
-										onRename={() => {
-											toast.error(`Feature not implemented`)
-										}}
-										onDuplicate={() => {
-											toast.error(`Feature not implemented`)
-										}}
-										onDelete={() => {
-											toast.error(`Feature not implemented`)
-										}}
 										onExpand={() => onExpand(item._id)}
 										expanded={expanded[item._id]}
 										level={level}

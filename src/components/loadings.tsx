@@ -1,9 +1,10 @@
 import { Text } from "@chakra-ui/react"
-import { Bouncy } from "ldrs/react"
+import { Bouncy, Cardio } from "ldrs/react"
 import "ldrs/react/Bouncy.css"
+import "ldrs/react/Cardio.css"
 import { cn } from "../lib/utils"
 
-interface BouncyLoadingProps {
+interface LoadingProps {
 	color?: string
 	speed?: number
 	size?: number
@@ -18,7 +19,7 @@ export const BouncyLoading = ({
 	label,
 	direction = "vertical",
 	takeFullScreen = false,
-}: BouncyLoadingProps) => {
+}: LoadingProps) => {
 	return (
 		<div
 			className={cn(
@@ -31,6 +32,42 @@ export const BouncyLoading = ({
 				color={color}
 				speed={speed}
 				size={size}
+			/>
+			{label && (
+				<Text
+					as={"span"}
+					color={"fg"}
+					fontSize={"lg"}
+					fontFamily={"var(--font-bricolage)"}
+				>
+					{label}
+				</Text>
+			)}
+		</div>
+	)
+}
+
+export const CardioLoading = ({
+	color = "var(--chakra-colors-fg)",
+	speed = 2,
+	size = 50,
+	label,
+	direction = "vertical",
+	takeFullScreen,
+}: LoadingProps) => {
+	return (
+		<div
+			className={cn(
+				"flex items-center justify-center",
+				direction === "vertical" ? "flex-col" : "flex-row",
+				takeFullScreen && "fixed h-screen w-full bg-background"
+			)}
+		>
+			<Cardio
+				size={size}
+				stroke="2"
+				speed={speed}
+				color={color}
 			/>
 			{label && (
 				<Text
