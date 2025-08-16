@@ -21,9 +21,9 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 			</AuthLoading>
 			<Authenticated>{children}</Authenticated>
 			<Unauthenticated>
-				{/* <AuthLayout>
+				<AuthLayout>
 					<SignInView />
-				</AuthLayout> */}
+				</AuthLayout>
 				{children}
 			</Unauthenticated>
 		</>

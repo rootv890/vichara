@@ -27,6 +27,7 @@ import { useCreateNote } from "../../hooks/use-create-note"
 import NoteSidebarItem, { EmptyNoteSidebarItem } from "./note-sidebar-item"
 import OrganizationSwitcher from "./organization-switcher"
 import SearchButton from "./search"
+import SidebarList from "./sidebar-list"
 import UserButton from "./user-button"
 
 type Props = {
@@ -38,9 +39,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 	const ref = React.useRef<HTMLDivElement>(null)
 	const { organizationId } = useOrganization()
 	const { user } = useUser()
-	const { createNotePromise, isLoading, error } = useCreateNote()
-
-	const notesList = useQuery(api.notes.getAll, {})
+	const { createNotePromise, isLoading } = useCreateNote()
 
 	function handleNewNote() {
 		if (!organizationId || !user?.id) {
@@ -49,12 +48,9 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 		}
 
 		toast.promise(
-			// @ts-ignore will fix
+			// @ts-ignore will fix the TYPE
 			createNotePromise({
-				title: "New Note",
-				// isArchived: false,
-				organizationId,
-				userId: user.id,
+				title: `${Math.floor(Math.random() * 10)}-${organizationId}`,
 			}),
 			{
 				loading: "Creating note...",
@@ -100,7 +96,13 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				gap={4}
 			>
 				{/* Header */}
-				<HStack>
+				<HStack
+					w="full"
+					justify="space-between"
+					align="center"
+					p={0}
+					borderRadius="md"
+				>
 					<OrganizationSwitcher isCollapsed={isCollapsed} />
 					<Button
 						size="sm"
@@ -136,69 +138,8 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 							<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
 						)}
 					</Button>
-
-					{true && (
-						<VStack
-							className="w-full"
-							align="stretch"
-							gap={0}
-							flex={"1"}
-							overflowY={"auto"}
-						>
-							<Collapsible.Root defaultOpen={true}>
-								<Collapsible.Trigger asChild>
-									<Button
-										variant="ghost"
-										size="sm"
-										justifyContent="space-between"
-										w="full"
-										color="gray.fg"
-										fontWeight="medium"
-										px={2}
-										py={1}
-									>
-										<Flex
-											justify={"start"}
-											alignItems={"center"}
-											gap={2}
-										>
-											<FaHistory />
-											{isCollapsed ? null : "Recent Notes"}
-										</Flex>
-										<GoTriangleRight />
-									</Button>
-								</Collapsible.Trigger>
-								<Collapsible.Content>
-									<VStack
-										className="w-full h-full"
-										align="stretch"
-										gap={0.5}
-									>
-										<For
-											each={notesList}
-											fallback={<EmptyNoteSidebarItem />}
-										>
-											{(item, index) => (
-												<NoteSidebarItem
-													key={item._id}
-													note={item}
-													onRename={() => {
-														toast.error(`Feature not implemented`)
-													}}
-													onDuplicate={() => {
-														toast.error(`Feature not implemented`)
-													}}
-													onDelete={() => {
-														toast.error(`Feature not implemented`)
-													}}
-												/>
-											)}
-										</For>
-									</VStack>
-								</Collapsible.Content>
-							</Collapsible.Root>
-						</VStack>
-					)}
+					{/* list={notesList || []} */}
+					{true && <SidebarList />}
 				</VStack>
 
 				{/* User section */}

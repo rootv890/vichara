@@ -1,19 +1,15 @@
 "use client"
-import {
-	Box,
-	Button,
-	Heading,
-	HStack,
-	Icon,
-	Input,
-	Link,
-	Text,
-	VStack,
-} from "@chakra-ui/react"
-import * as Clerk from "@clerk/elements/common"
+import { LinkButton } from "@/components/ui/link-button"
+import { Box, Text } from "@chakra-ui/react"
 import * as SignIn from "@clerk/elements/sign-in"
-import Image from "next/image"
-import { FaGithub, FaGoogle } from "react-icons/fa"
+import {
+	AuthField,
+	AuthGlobalError,
+	AuthHeader,
+	AuthSubmitButton,
+	AuthToggleLink,
+	SocialAuthSection,
+} from "../components"
 
 export function SignInView() {
 	return (
@@ -32,159 +28,96 @@ export function SignInView() {
 						rounded="2xl"
 						shadow="lg"
 						p={{ base: 6, sm: 8 }}
-						spaceY={6}
+						spaceY={4}
 						bg={"bg"}
 					>
 						{/* Header */}
-						<Box textAlign="center">
-							<Box
-								mx="auto"
-								w="10"
-								h="10"
-								rounded="full"
-								display="flex"
-								alignItems="center"
-								justifyContent="center"
-								overflow={"clip"}
-								mb={4}
-							>
-								<Image
-									src="/logo-dark.svg"
-									alt="Vichara Logo"
-									width={40}
-									height={40}
-									className="object-cover"
-								/>
-							</Box>
-							<Heading
-								as="h1"
-								size="xl"
-								fontWeight="medium"
-								color="fg"
-								fontFamily={"var(--font-bricolage)"}
-							>
-								Sign in to Vichara
-							</Heading>
-						</Box>
+						<AuthHeader title="Sign in to Vichara" />
 
 						{/* Global Error */}
-						<Clerk.GlobalError asChild>
-							<Text
-								fontSize="sm"
-								color="red.500"
-							/>
-						</Clerk.GlobalError>
+						<AuthGlobalError />
 
 						{/* Email Field */}
-						<Clerk.Field name="identifier">
-							<Clerk.Label className="sr-only">Email</Clerk.Label>
-							<Clerk.Input
-								asChild
-								type="email"
-								required
-							>
-								<Input
-									placeholder="Email"
-									variant="subtle"
-									color={"fg"}
-									_invalid={{ borderColor: "red.500", color: "red.500" }}
-									py={2}
-									rounded={"xl"}
-								/>
-							</Clerk.Input>
-							<Clerk.FieldError asChild>
-								<Text
-									fontSize="xs"
-									color="red.500"
-									mt={2}
-								/>
-							</Clerk.FieldError>
-						</Clerk.Field>
+						<AuthField
+							name="identifier"
+							type="email"
+							placeholder="Email"
+							label="Email"
+						/>
 
 						{/* Submit Button */}
 						<SignIn.Action
 							submit
 							asChild
 						>
-							<Button
-								w="full"
-								color="white"
-								py={1.5}
-								fontSize="sm"
-								fontWeight="medium"
-								rounded="lg"
-							>
-								Sign In
-							</Button>
+							<AuthSubmitButton>Continue</AuthSubmitButton>
 						</SignIn.Action>
 
+						<div className="divider">or</div>
+
 						{/* Social Login Section */}
-						<Box
-							bg="bg.emphasized"
-							rounded="3xl"
-							p={5}
-						>
-							<Text
-								textAlign="center"
-								fontSize="sm"
-								color="fg"
-								mb={4}
-							>
-								Alternatively, sign in with these platforms
-							</Text>
-							<VStack gap={2}>
-								<Clerk.Connection
-									name="github"
-									asChild
-								>
-									<Button
-										w="full"
-										fontSize="sm"
-										fontWeight="medium"
-										variant={"subtle"}
-										rounded={"xl"}
-									>
-										<FaGithub />
-										Login with GitHub
-									</Button>
-								</Clerk.Connection>
-								<Clerk.Connection
-									name="google"
-									asChild
-								>
-									<Button
-										w="full"
-										fontSize="sm"
-										fontWeight="medium"
-										variant={"solid"}
-										rounded={"xl"}
-									>
-										<FaGoogle />
-										Login with Google
-									</Button>
-								</Clerk.Connection>
-							</VStack>
-						</Box>
+						<SocialAuthSection title="Alternatively, sign in with these platforms" />
 
 						{/* Sign Up Link */}
+						<AuthToggleLink
+							question="Don't have an account?"
+							linkText="Sign up"
+							navigateTo="sign-up"
+						/>
+					</Box>
+				</SignIn.Step>
+
+				{/* Step: enter password */}
+				<SignIn.Step name="choose-strategy">
+					<Box
+						w={{ base: "full", sm: "480px", md: "520px" }}
+						rounded="2xl"
+						shadow="lg"
+						p={{ base: 6, sm: 8 }}
+						spaceY={4}
+						bg={"bg"}
+					>
+						{/* Header */}
+						<AuthHeader title="Enter your password" />
+
+						{/* Global Error */}
+						<AuthGlobalError />
+
+						{/* Password Field */}
+						<AuthField
+							name="password"
+							type="password"
+							placeholder="Password"
+							label="Password"
+						/>
+
+						{/* Submit Button */}
+						<SignIn.Action
+							submit
+							asChild
+						>
+							<AuthSubmitButton>Sign In</AuthSubmitButton>
+						</SignIn.Action>
+
+						{/* Alternative strategies */}
 						<Text
 							textAlign="center"
 							fontSize="sm"
 							color="gray.500"
 						>
-							Don&apos;t have an account?{" "}
-							<Clerk.Link navigate="sign-up">
-								<Link
-									color="gray.700"
-									fontWeight="medium"
-									_hover={{ bg: "gray.100" }}
-									px={1}
-									py={0.5}
-									rounded="sm"
+							<SignIn.Action
+								navigate="verifications?strategy=email_code"
+								asChild
+							>
+								<LinkButton
+									size={"xs"}
+									variant={"ghost"}
+									py={"0!important"}
+									rounded={"md"}
 								>
-									Sign up
-								</Link>
-							</Clerk.Link>
+									Forgot your password? Use email code instead
+								</LinkButton>
+							</SignIn.Action>
 						</Text>
 					</Box>
 				</SignIn.Step>
@@ -194,117 +127,43 @@ export function SignInView() {
 					<SignIn.Strategy name="email_code">
 						<Box
 							w={{ base: "full", sm: "480px", md: "520px" }}
-							bg="white"
 							rounded="2xl"
 							shadow="lg"
 							p={{ base: 6, sm: 8 }}
-							spaceY={6}
+							spaceY={4}
+							bg={"bg"}
 						>
 							{/* Header */}
-							<Box textAlign="center">
-								<Box
-									mx="auto"
-									w="10"
-									h="10"
-									bg="gray.900"
-									rounded="full"
-									display="flex"
-									alignItems="center"
-									justifyContent="center"
-									mb={4}
-								>
-									<Text
-										color="white"
-										fontWeight="bold"
-									>
-										V
-									</Text>
-								</Box>
-								<Heading
-									as="h1"
-									size="lg"
-									fontWeight="medium"
-									color="gray.900"
-								>
-									Verify email code
-								</Heading>
-							</Box>
+							<AuthHeader
+								title="Verify email code"
+								subtitle="We sent a verification code to your email"
+							/>
 
 							{/* Global Error */}
-							<Clerk.GlobalError asChild>
-								<Text
-									fontSize="sm"
-									color="red.500"
-								/>
-							</Clerk.GlobalError>
+							<AuthGlobalError />
 
 							{/* Code Field */}
-							<Clerk.Field name="code">
-								<Clerk.Label className="sr-only">Email code</Clerk.Label>
-								<Clerk.Input
-									asChild
-									type="otp"
-									required
-								>
-									<Input
-										placeholder="Email code"
-										variant="flushed"
-										borderColor="gray.300"
-										_hover={{ borderColor: "gray.400" }}
-										_focus={{ borderColor: "gray.600" }}
-										_invalid={{ borderColor: "red.500", color: "red.500" }}
-										py={2}
-									/>
-								</Clerk.Input>
-								<Clerk.FieldError asChild>
-									<Text
-										fontSize="xs"
-										color="red.500"
-										mt={2}
-									/>
-								</Clerk.FieldError>
-							</Clerk.Field>
+							<AuthField
+								name="code"
+								type="otp"
+								placeholder="Email code"
+								label="Email code"
+							/>
 
 							{/* Submit Button */}
 							<SignIn.Action
 								submit
 								asChild
 							>
-								<Button
-									w="full"
-									bg="gray.600"
-									color="white"
-									_hover={{ bg: "gray.700" }}
-									_active={{ bg: "gray.600" }}
-									py={1.5}
-									fontSize="sm"
-									fontWeight="medium"
-									rounded="md"
-								>
-									Continue
-								</Button>
+								<AuthSubmitButton>Continue</AuthSubmitButton>
 							</SignIn.Action>
 
 							{/* Sign Up Link */}
-							<Text
-								textAlign="center"
-								fontSize="sm"
-								color="gray.500"
-							>
-								Don&apos;t have an account?{" "}
-								<Clerk.Link navigate="sign-up">
-									<Link
-										color="gray.700"
-										fontWeight="medium"
-										_hover={{ bg: "gray.100" }}
-										px={1}
-										py={0.5}
-										rounded="sm"
-									>
-										Sign up
-									</Link>
-								</Clerk.Link>
-							</Text>
+							<AuthToggleLink
+								question="Don't have an account?"
+								linkText="Sign up"
+								navigateTo="sign-up"
+							/>
 						</Box>
 					</SignIn.Strategy>
 				</SignIn.Step>

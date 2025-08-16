@@ -1,3 +1,4 @@
+import { Text } from "@chakra-ui/react"
 import { Bouncy } from "ldrs/react"
 import "ldrs/react/Bouncy.css"
 import { cn } from "../lib/utils"
@@ -11,7 +12,7 @@ interface BouncyLoadingProps {
 	takeFullScreen?: boolean
 }
 export const BouncyLoading = ({
-	color = "var(--foreground)",
+	color = "var(--chakra-colors-fg)",
 	speed = 1.6,
 	size = 55,
 	label,
@@ -32,7 +33,14 @@ export const BouncyLoading = ({
 				size={size}
 			/>
 			{label && (
-				<p className="text-foreground !text-xl !font-heading">{label}</p>
+				<Text
+					as={"span"}
+					color={"fg"}
+					fontSize={"lg"}
+					fontFamily={"var(--font-bricolage)"}
+				>
+					{label}
+				</Text>
 			)}
 		</div>
 	)
