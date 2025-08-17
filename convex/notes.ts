@@ -1,5 +1,5 @@
 import { paginationOptsValidator } from "convex/server"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { Doc, Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import { requireIdentity, requireIdentityAndOrg } from "./_helpers/identity"
@@ -319,5 +319,82 @@ export const deleteNotePermanently = mutation({
 		await ctx.db.delete(args.id)
 
 		return existingNote
+	},
+})
+
+export const getNoteById = query({
+	args: {
+		id: v.id("notes"),
+	},
+	handler: async (ctx, args) => {
+		const note = await ctx.db.get(args.id)
+
+		if (!note) {
+			throw new ConvexError({ message: "Note not found", code: "NOT_FOUND" })
+		}
+
+		// 1. Published + not archived → public access
+		if (note.isPublished && !note.isArchived) {
+			const { userId, ...publicNote } = note
+			return publicNote
+		}
+
+		// 2. Otherwise, must be logged in
+		const { identity } = await requireIdentityAndOrg(ctx)
+		if (!identity) {
+			throw new ConvexError({ message: "Unauthorized", code: "UNAUTHORIZED" })
+		}
+
+		const userId = identity.subject
+
+		// 3. Private note must belong to the current user
+		// user can get in the right organization
+		if (
+			note.userId !== userId ||
+			note.organizationId !== identity.organizationId
+		) {
+			throw new ConvexError({
+				message: "Unauthorized to access this note",
+				code: "UNAUTHORIZED",
+			})
+		}
+
+		// 4. Owners can still see archived notes (Trash feature)
+		return note
+	},
+})
+
+export const updateNote = mutation({
+	args: {
+		id: v.id("notes"),
+		title: v.optional(v.string()),
+		content: v.optional(v.string()),
+		coverImage: v.optional(v.string()),
+		icon: v.optional(v.string()),
+		isPublished: v.optional(v.boolean()),
+	},
+	handler: async (ctx, args) => {
+		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
+		const existingNote = await ctx.db.get(args.id)
+		if (!existingNote)
+			throw new ConvexError({ message: "Note not found", code: "NOT_FOUND" })
+
+		if (existingNote.userId !== identity.subject)
+			throw new ConvexError({ message: "Not the owner", code: "UNAUTHORIZED" })
+
+		if (existingNote.organizationId !== organizationId)
+			throw new ConvexError({
+				message: "Different organization",
+				code: "FORBIDDEN",
+			})
+
+		if (existingNote.isArchived)
+			throw new ConvexError({
+				message: "Cannot update archived note",
+				code: "FORBIDDEN",
+			})
+
+		const { id, ...fields } = args
+		return ctx.db.patch(id, fields)
 	},
 })

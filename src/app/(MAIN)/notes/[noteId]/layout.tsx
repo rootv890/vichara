@@ -1,14 +1,11 @@
+import NoteIdLayout from "@/modules/notes/ui/layouts/note-id-layout"
 import React from "react"
 
 interface Props {
 	children: React.ReactNode
 }
-const NoteIdLayout = ({ children }: Props) => {
-	return (
-		<div style={{ color: "var(--chakra-colors-fg)" }}>
-			NoteIdLayout {children}
-		</div>
-	)
+const NoteIdLayoutWrapper = ({ children }: Props) => {
+	return <NoteIdLayout>{children}</NoteIdLayout>
 }
 
-export default NoteIdLayout
+export default NoteIdLayoutWrapper

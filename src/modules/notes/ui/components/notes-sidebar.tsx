@@ -51,6 +51,7 @@
  */
 import { Button } from "@/components/ui/button"
 import {
+	gutterWidthAtom,
 	persistantCounter,
 	sidebarWidthAtom,
 	useOrganization,
@@ -98,6 +99,14 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 			ref.current.style.width = `${sidebarWidth}px`
 		}
 	}, [sidebarWidth, isDragging])
+
+	// gutter width reset on sidebar toggle
+	const setGutterWidth = useSetAtom(gutterWidthAtom)
+	React.useEffect(() => {
+		if (!isCollapsed) {
+			setGutterWidth(0) // Reset gutter width when collapsed
+		}
+	}, [isCollapsed])
 
 	function handleNewNote() {
 		if (!organizationId || !user?.id) {
@@ -381,6 +390,8 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 						w="full"
 						gap={2}
 						align="stretch"
+						py={4}
+						p={1}
 					>
 						{/* Trash/Recycle Bin Button */}
 						<Trash />
