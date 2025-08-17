@@ -1,18 +1,13 @@
 "use client"
 import { isSidebarCollapsed } from "@/modules/atoms"
-import {
-	Button,
-	IconButton,
-	Input,
-	InputGroup,
-	Kbd,
-	Show,
-} from "@chakra-ui/react"
+import { IconButton, Input, InputGroup, Kbd, Show } from "@chakra-ui/react"
 import { useAtomValue } from "jotai/react"
 import { LuSearch } from "react-icons/lu"
+import { useCommandSearchContext } from "../../contexts/command-search-context"
 
 const SidebarSearchButton = () => {
 	const isSidebarOpen = useAtomValue(isSidebarCollapsed)
+	const { openMenu } = useCommandSearchContext()
 
 	// Safe platform detection
 	const getMetaKey = () => {
@@ -22,6 +17,11 @@ const SidebarSearchButton = () => {
 	}
 
 	const metaKey = getMetaKey()
+
+	const handleSearchClick = () => {
+		console.log("Search clicked - opening command menu")
+		openMenu()
+	}
 
 	return (
 		<>
@@ -39,9 +39,15 @@ const SidebarSearchButton = () => {
 						height={"40px"}
 						color={"fg"}
 						bg="bg.emphasized"
+						cursor="pointer"
+						readOnly
+						onClick={handleSearchClick}
 						_focus={{
 							outline: "none",
 							borderColor: "colorPalette.500",
+						}}
+						_hover={{
+							bg: "bg.muted",
 						}}
 					/>
 				</InputGroup>
@@ -56,6 +62,7 @@ const SidebarSearchButton = () => {
 					title="Search"
 					color={"fg"}
 					rounded={"l3"}
+					onClick={handleSearchClick}
 					_hover={{
 						bg: "bg.emphasized",
 					}}

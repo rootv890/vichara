@@ -3,12 +3,12 @@ import { BouncyLoading, CardioLoading } from "@/components/loadings"
 import { expandedNotesAtom, isSidebarCollapsed } from "@/modules/atoms/atoms"
 import { Box, Button, Collapsible, Flex, For, VStack } from "@chakra-ui/react"
 import { api } from "@convex/_generated/api"
-import { Doc, Id } from "@convex/_generated/dataModel"
+import { Id } from "@convex/_generated/dataModel"
 import { useQuery } from "convex/react"
-import { useAtom, useAtomValue, useSetAtom } from "jotai/react"
-import { usePathname, useRouter } from "next/navigation"
-import React from "react"
+import { useAtomValue, useSetAtom } from "jotai/react"
 
+import { Bouncy } from "ldrs/react"
+import React from "react"
 import { FaHistory } from "react-icons/fa"
 import { GoTriangleRight } from "react-icons/go"
 import NoteSidebarItem, { EmptyNoteSidebarItem } from "./note-sidebar-item"
@@ -39,8 +39,10 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 		parentNote: parentNoteId,
 	})
 
+	console.log("SidebarList notes:", notes?.length)
+
 	if (notes === undefined) {
-		return <CardioLoading label="Loading notes bro..." />
+		return <BouncyLoading label="Loading notes bro..." />
 	}
 
 	// If this is a recursive call (level > 0), don't show the collapsible wrapper
@@ -51,13 +53,14 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 				align="stretch"
 				gap={0.5}
 				ml={4} // Indent child notes
+				w="full"
 			>
 				<For
 					each={notes}
 					fallback={null}
 				>
 					{(item, _i) => (
-						<>
+						<React.Fragment key={item._id}>
 							<NoteSidebarItem
 								key={item._id}
 								note={item}
@@ -71,7 +74,7 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 									parentNoteId={item._id}
 								/>
 							)}
-						</>
+						</React.Fragment>
 					)}
 				</For>
 			</VStack>
@@ -81,13 +84,10 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 	// Top level component with collapsible wrapper
 	return (
 		<VStack
-			className="w-full"
-			align="stretch"
+			w="full"
+			align="start"
 			gap={0}
-			flex={"1"}
-			minH={0}
-			overflowY={"auto"}
-			overflowX={"hidden"}
+			h="full" // Take full height of parent container
 		>
 			<Collapsible.Root defaultOpen={true}>
 				<Collapsible.Trigger asChild>
@@ -100,6 +100,7 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 						fontWeight="medium"
 						px={2}
 						py={1}
+						flexShrink={0} // Don't shrink the trigger button
 					>
 						<Flex
 							justify={"start"}
@@ -115,48 +116,42 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 				<Collapsible.Content
 					display="flex"
 					flexDir="column"
-					h="full"
-					minH={0}
-					overflowX="hidden"
+					flex="1"
+					minH={0} // Important: allows content to shrink below its natural size
+					w="full"
 				>
-					<Box
-						className="scrollbar-x-hidden"
-						overflowX="auto"
+					{/* This is now the scrollable container */}
+					<VStack
+						className="w-full"
+						align="stretch"
+						gap={0.5}
+						pos={"relative"}
 						w="full"
 						h="full"
-						flex={1}
 					>
-						<VStack
-							className="w-full h-full"
-							align="stretch"
-							gap={0.5}
-							pos={"relative"}
-							minW="max-content"
+						<For
+							each={notes}
+							fallback={<EmptyNoteSidebarItem />}
 						>
-							<For
-								each={notes}
-								fallback={<EmptyNoteSidebarItem />}
-							>
-								{(item, index) => (
-									<>
-										<NoteSidebarItem
-											key={item._id}
-											note={item}
-											onExpand={() => onExpand(item._id)}
-											expanded={expanded[item._id]}
-											level={level}
+							{(item, index) => (
+								<React.Fragment key={item._id}>
+									<NoteSidebarItem
+										key={item._id}
+										note={item}
+										onExpand={() => onExpand(item._id)}
+										expanded={expanded[item._id]}
+										level={level}
+									/>
+									{expanded[item._id] && (
+										<SidebarList
+											level={level + 1}
+											parentNoteId={item._id}
 										/>
-										{expanded[item._id] && (
-											<SidebarList
-												level={level + 1}
-												parentNoteId={item._id}
-											/>
-										)}
-									</>
-								)}
-							</For>
-						</VStack>
-					</Box>
+									)}
+								</React.Fragment>
+							)}
+						</For>
+					</VStack>
 				</Collapsible.Content>
 			</Collapsible.Root>
 		</VStack>

@@ -1,4 +1,4 @@
-import { UserIdentity } from "convex/server"
+import { paginationOptsValidator } from "convex/server"
 import { v } from "convex/values"
 import { Doc, Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
@@ -50,6 +50,56 @@ export const getAll = query({
 			.order("desc")
 			.collect()
 
+		return notes
+	},
+})
+
+// paginated notes
+export const getPaginatedNotes = query({
+	args: {
+		paginationOpts: paginationOptsValidator,
+	},
+	handler: async (ctx, args) => {
+		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
+		const userId = identity.subject
+
+		const notes = ctx.db
+			.query("notes")
+			.withIndex("by_user_organization", (q) =>
+				q.eq("userId", userId).eq("organizationId", organizationId)
+			)
+			.filter((q) =>
+				q.and(
+					q.eq(q.field("userId"), userId),
+					q.eq(q.field("organizationId"), organizationId),
+					q.eq(q.field("isArchived"), false)
+				)
+			)
+			.order("desc")
+			.paginate(args.paginationOpts)
+
+		return notes
+	},
+})
+
+export const searchNotes = query({
+	args: {
+		search: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
+		const userId = identity.subject
+
+		const notes = ctx.db
+			.query("notes")
+			.withSearchIndex("search_notes_title", (qry) =>
+				qry
+					.search("title", args.search)
+					.eq("userId", userId)
+					.eq("organizationId", organizationId)
+					.eq("isArchived", false)
+			)
+			.take(100) // limit to 100 results
 		return notes
 	},
 })

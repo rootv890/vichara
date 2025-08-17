@@ -22,3 +22,5 @@ export const sidebarWidthAtom = atomWithStorage<number>(
 	SIDEBAR_WIDTH_STORAGE_KEY,
 	280
 )
+
+export const persistantCounter = atomWithStorage<number>("persistantCounter", 0)

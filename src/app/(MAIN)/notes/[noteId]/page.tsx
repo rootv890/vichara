@@ -7,7 +7,7 @@ interface Props {
 
 const NoteIdPage = async ({ params }: Props) => {
 	const { noteId } = await params
-	return <Box color={"fg"}>NoteIdPage {noteId}</Box>
+	return <Box color={"fg"}>{noteId}</Box>
 }
 
 export default NoteIdPage

@@ -2,7 +2,7 @@
 import { CgRename } from "react-icons/cg"
 
 import { cn, processNoteIcon } from "@/lib/utils"
-import { isSidebarCollapsed } from "@/modules/atoms"
+import { isSidebarCollapsed, persistantCounter } from "@/modules/atoms"
 import {
 	Box,
 	Button,
@@ -26,7 +26,7 @@ import { useClerk } from "@clerk/nextjs"
 import { api } from "@convex/_generated/api"
 import { Doc } from "@convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
-import { useAtomValue } from "jotai/react"
+import { useAtomValue, useSetAtom } from "jotai/react"
 import Image from "next/image"
 import NextLink from "next/link"
 
@@ -61,35 +61,26 @@ const NoteSidebarItem = ({
 	const { createNotePromise } = useCreateNote()
 	const { user, organization } = useClerk()
 	const isActive = pathname.includes(note._id)
-	// Create a new nested note
-	const handleCreateNestedNote = async () => {
+	const persistantCounterNum = useAtomValue(persistantCounter)
+	const setPersistantCounter = useSetAtom(persistantCounter)
+
+	function handleNewNote() {
 		if (!organization?.id || !user?.id) {
 			toast.error("Organization or user not found")
 			return
 		}
+		setPersistantCounter(persistantCounterNum + 1)
 		toast
 			.promise(
 				// @ts-ignore will fix the TYPE
 				createNotePromise({
-					title: `New Note ${Math.floor(Math.random() * 5)}`,
+					title: `New Note ${persistantCounterNum}`,
 					parentNote: note._id,
 				}),
-
 				{
-					loading: "Creating nested note...",
-					success: "Nested note created successfully!",
-					error: (error) => {
-						console.error("Error creating nested note:", error)
-						return "Failed to create nested note"
-					},
-				},
-				{
-					success: {
-						iconTheme: {
-							primary: "var(--chakra-colors-bg)",
-							secondary: "var(--chakra-colors-fg)",
-						},
-					},
+					loading: "Creating note...",
+					success: "Note created!",
+					error: (err) => `Error creating note: ${err.message}`,
 				}
 			)
 			.then((newNoteId) => {
@@ -99,6 +90,7 @@ const NoteSidebarItem = ({
 				router.push(`/notes/${newNoteId}`)
 			})
 	}
+
 	const archive = useMutation(api.notes.archive)
 
 	// Check if this note has children
@@ -214,7 +206,7 @@ const NoteSidebarItem = ({
 						h={"fit"}
 						_hover={{ bg: "bg.emphasized" }}
 						transition="all 0.15s ease"
-						onClick={handleCreateNestedNote}
+						onClick={handleNewNote}
 						p={"0!important"}
 					>
 						<LuPlus className="size-3 group-hover/sidebaritem:opacity-100 opacity-0" />
@@ -261,7 +253,7 @@ const NoteSidebarItem = ({
 									<MenuItemGroup>
 										<MenuItem
 											value="duplicate"
-											onClick={handleCreateNestedNote}
+											onClick={handleNewNote}
 											rounded={"lg"}
 											className="flex items-center gap-2 justify-start "
 										>

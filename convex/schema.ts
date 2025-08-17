@@ -15,6 +15,10 @@ export default defineSchema({
 		isPublished: v.boolean(),
 		archivedAt: v.optional(v.number()), // in milliseconds
 	})
+		.searchIndex("search_notes_title", {
+			searchField: "title",
+			filterFields: ["userId", "organizationId", "isArchived"],
+		})
 		.index("by_user", ["userId"])
 		.index("by_user_parent", ["userId", "parentNote"])
 		.index("by_user_organization", ["userId", "organizationId"]),

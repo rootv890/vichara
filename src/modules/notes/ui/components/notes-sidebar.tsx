@@ -1,6 +1,10 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { sidebarWidthAtom, useOrganization } from "@/modules/atoms"
+import {
+	persistantCounter,
+	sidebarWidthAtom,
+	useOrganization,
+} from "@/modules/atoms"
 import { Box, HStack, Text, VStack } from "@chakra-ui/react"
 import { useUser } from "@clerk/nextjs"
 import { useAtomValue, useSetAtom } from "jotai/react"
@@ -36,7 +40,8 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 	const sidebarWidth = useAtomValue(sidebarWidthAtom)
 	const setSidebarWidth = useSetAtom(sidebarWidthAtom)
 	const [isDragging, setIsDragging] = React.useState(false)
-
+	const persistantCounterNum = useAtomValue(persistantCounter)
+	const setPersistantCounter = useSetAtom(persistantCounter)
 	// Keep DOM width in sync when atom changes (e.g., on load)
 	React.useEffect(() => {
 		if (ref.current && !isDragging) {
@@ -49,10 +54,13 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 			toast.error("Organization or user not found")
 			return
 		}
+
+		setPersistantCounter(persistantCounterNum + 1)
+
 		toast.promise(
 			// @ts-ignore will fix the TYPE
 			createNotePromise({
-				title: `${Math.floor(Math.random() * 10)}-${organizationId}`,
+				title: `New Note ${persistantCounterNum}`,
 			}),
 			{
 				loading: "Creating note...",
@@ -117,7 +125,9 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 			pos="fixed"
 			top={0}
 			left={0}
-			h="100vh"
+			h="full"
+			maxH="100vh"
+			overflowY="auto"
 			// width is controlled via style (synced in effect + during drag)
 			// set an initial width as a fallback
 			w={`${sidebarWidth}px`}
@@ -129,7 +139,6 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 			// disable transform transition while dragging; keep it for collapse/expand
 			transition={isDragging ? "none" : "transform 0.3s ease-in-out"}
 			transform={isCollapsed ? "translateX(-100%)" : "translateX(0)"}
-			zIndex={9999}
 			p={2}
 			css={{
 				"--text-color": "colors.fg",
@@ -155,12 +164,16 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				aria-orientation="vertical"
 			/>
 
-			<VStack
+			{/* Use CSS Grid for proper sticky footer layout */}
+			<Box
 				h="full"
-				align="center"
+				w="full"
+				display="grid"
+				gridTemplateRows="auto 1fr auto"
+				gridTemplateColumns="1fr"
 				gap={4}
 			>
-				{/* Header */}
+				{/* Header - Fixed at top */}
 				<HStack
 					w="full"
 					justify="space-between"
@@ -182,12 +195,14 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					</Button>
 				</HStack>
 
-				{/* Content */}
+				{/* Content - Scrollable middle section */}
 				<VStack
 					align="stretch"
 					gap={2}
-					flex={1}
 					w="full"
+					h="full"
+					minH={0} // Important: allows flex child to shrink below content size
+					overflowY="hidden" // Parent container doesn't scroll
 				>
 					<SidebarSearchButton />
 					<Button
@@ -203,17 +218,33 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 						alignItems="center"
 						gap={3}
 						w="full"
+						flexShrink={0} // Don't shrink this button
 					>
 						<LuPlus />
 						<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
 					</Button>
-					<SidebarList />
+					{/* Scrollable list container */}
+					<Box
+						flex="1"
+						minH={0} // Important: allows this to shrink below content size
+						overflowY="auto" // Only this section scrolls
+						overflowX="auto"
+						w="full"
+					>
+						<SidebarList />
+					</Box>
 				</VStack>
 
-				{/* Footer */}
-				<Trash />
-				<UserButton isCollapsed={false} />
-			</VStack>
+				{/* Footer - Fixed at bottom */}
+				<VStack
+					w="full"
+					gap={2}
+					flexShrink={0} // Don't shrink the footer
+				>
+					<Trash />
+					<UserButton isCollapsed={false} />
+				</VStack>
+			</Box>
 		</Box>
 	)
 }
