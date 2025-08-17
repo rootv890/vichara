@@ -3,7 +3,7 @@ import {
 	CommandGroup,
 	CommandItem,
 } from "@/components/ui/command-search"
-import { useCommandSearch } from "@/hooks/use-command-search"
+import { useSearchCommandHandler } from "@/hooks/use-command-handler"
 import { processNoteIcon } from "@/lib/utils"
 import { api } from "@convex/_generated/api"
 import { useQuery } from "convex/react"
@@ -109,7 +109,7 @@ export const useTrashCommandSearch = () => {
 		})
 	}
 
-	return useCommandSearch({
+	return useSearchCommandHandler({
 		actions,
 		groups,
 		shortcuts,

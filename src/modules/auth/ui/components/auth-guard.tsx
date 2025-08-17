@@ -1,13 +1,8 @@
 "use client"
 
 import { BouncyLoading } from "@/components/loadings"
-import { api } from "@convex/_generated/api"
-import {
-	Authenticated,
-	AuthLoading,
-	Unauthenticated,
-	useQuery,
-} from "convex/react"
+import { Box } from "@chakra-ui/react"
+import { Authenticated, AuthLoading, Unauthenticated } from "convex/react"
 import { AuthLayout } from "../layouts/auth-layout"
 import { SignInView } from "../views/sign-in-view"
 
@@ -16,7 +11,9 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 		<>
 			<AuthLoading>
 				<AuthLayout>
-					<BouncyLoading label="Making sure everything is in order..." />
+					<Box>
+						<BouncyLoading label="Making sure everything is in order..." />
+					</Box>
 				</AuthLayout>
 			</AuthLoading>
 			<Authenticated>{children}</Authenticated>

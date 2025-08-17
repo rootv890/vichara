@@ -182,14 +182,23 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					borderRadius="md"
 					borderBottom={"1px solid"}
 					borderColor={"gray.fg/10"}
+					minW={0} // Allow shrinking below content size
 				>
-					<OrganizationSwitcher isCollapsed={false} />
+					<Box
+						flex="1"
+						minW={0}
+					>
+						{" "}
+						{/* Allow organization switcher to grow/shrink */}
+						<OrganizationSwitcher isCollapsed={false} />
+					</Box>
 					<Button
 						size="sm"
 						variant="ghost"
 						p="1"
 						onClick={onToggle}
 						aria-label="Close sidebar"
+						flexShrink={0} // Keep button size fixed
 					>
 						<IoIosArrowBack />
 					</Button>
@@ -200,35 +209,38 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					align="stretch"
 					gap={2}
 					w="full"
-					h="full"
+					flex="1"
 					minH={0} // Important: allows flex child to shrink below content size
-					overflowY="hidden" // Parent container doesn't scroll
 				>
-					<SidebarSearchButton />
-					<Button
-						variant="surface"
-						size="sm"
-						aria-label="New Note"
-						title="New Note"
-						border={"none"}
-						onClick={handleNewNote}
-						disabled={isLoading}
-						display="flex"
-						justifyContent="flex-start"
-						alignItems="center"
-						gap={3}
+					<VStack
+						align="stretch"
+						gap={2}
 						w="full"
-						flexShrink={0} // Don't shrink this button
+						flexShrink={0} // Don't shrink the fixed elements
 					>
-						<LuPlus />
-						<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
-					</Button>
+						<SidebarSearchButton />
+						<Button
+							variant="surface"
+							size="sm"
+							aria-label="New Note"
+							title="New Note"
+							border={"none"}
+							onClick={handleNewNote}
+							disabled={isLoading}
+							display="flex"
+							justifyContent="flex-start"
+							alignItems="center"
+							gap={3}
+							w="full"
+						>
+							<LuPlus />
+							<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
+						</Button>
+					</VStack>
 					{/* Scrollable list container */}
 					<Box
 						flex="1"
-						minH={0} // Important: allows this to shrink below content size
-						overflowY="auto" // Only this section scrolls
-						overflowX="auto"
+						minH={0}
 						w="full"
 					>
 						<SidebarList />
@@ -240,6 +252,7 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 					w="full"
 					gap={2}
 					flexShrink={0} // Don't shrink the footer
+					minW={0} // Allow shrinking below content size
 				>
 					<Trash />
 					<UserButton isCollapsed={false} />

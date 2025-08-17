@@ -3,7 +3,7 @@ import { Toaster } from "react-hot-toast"
 import { CommandSearchProvider } from "../../contexts/command-search-context"
 import { CommandMenu } from "../components/notes-command-search"
 
-type Props = {
+interface Props {
 	children: React.ReactNode
 }
 
@@ -11,7 +11,7 @@ const MainLayout = ({ children }: Props) => {
 	return (
 		<AuthGuard>
 			<CommandSearchProvider>
-				<Toaster position="bottom-right" />
+				<Toaster position="top-right" />
 				<CommandMenu />
 				{children}
 			</CommandSearchProvider>

@@ -6,6 +6,7 @@ import {
 	HStack,
 	Kbd,
 	Separator,
+	Spinner,
 	Text,
 	VisuallyHidden,
 } from "@chakra-ui/react"
@@ -75,6 +76,22 @@ export interface CommandSearchProps {
 	 * Custom footer content
 	 */
 	footerContent?: React.ReactNode
+	/**
+	 * External search state (optional)
+	 */
+	search?: string
+	/**
+	 * External search state setter (optional)
+	 */
+	setSearch?: (search: string) => void
+	/**
+	 * Whether a search is currently in progress
+	 */
+	isSearching?: boolean
+	/**
+	 * Whether the search has results
+	 */
+	hasSearchResults?: boolean
 }
 
 export const CommandSearch: React.FC<CommandSearchProps> = ({
@@ -87,9 +104,24 @@ export const CommandSearch: React.FC<CommandSearchProps> = ({
 	emptyMessage,
 	showFooter = true,
 	footerContent,
+	search: externalSearch,
+	setSearch: externalSetSearch,
+	isSearching = false,
+	hasSearchResults = false,
 }) => {
-	const [search, setSearch] = React.useState("")
+	const [internalSearch, setInternalSearch] = React.useState("")
 	const router = useRouter()
+
+	// Use external search state if provided, otherwise use internal state
+	const search = externalSearch !== undefined ? externalSearch : internalSearch
+	const setSearch = externalSetSearch || setInternalSearch
+
+	// Reset search when menu is closed
+	React.useEffect(() => {
+		if (!open) {
+			setSearch("")
+		}
+	}, [open, setSearch])
 
 	const ItemStyle = {
 		padding: "0",
@@ -205,22 +237,39 @@ export const CommandSearch: React.FC<CommandSearchProps> = ({
 					gap={2}
 					borderBottom={".8px solid var(--chakra-colors-fg-subtle)"}
 				>
-					<Command.Input
-						placeholder={placeholder}
-						value={search}
-						onValueChange={setSearch}
-						style={{
-							padding: "12px 16px",
-							fontSize: "18px",
-							borderRadius: "16px",
-							outline: "none",
-							border: `1px solid var(--chakra-colors-fg-subtle)`,
-							background: `var(--chakra-colors-bg-subtle)`,
-							color: `var(--chakra-colors-fg)`,
-							width: "100%",
-							fontFamily: "inherit",
-						}}
-					/>
+					<HStack position="relative">
+						<Command.Input
+							placeholder={placeholder}
+							value={search}
+							onValueChange={setSearch}
+							style={{
+								padding: "12px 16px",
+								paddingRight: isSearching ? "48px" : "16px",
+								fontSize: "18px",
+								borderRadius: "16px",
+								outline: "none",
+								border: `1px solid var(--chakra-colors-fg-subtle)`,
+								background: `var(--chakra-colors-bg-subtle)`,
+								color: `var(--chakra-colors-fg)`,
+								width: "100%",
+								fontFamily: "inherit",
+							}}
+						/>
+						{isSearching && (
+							<Box
+								position="absolute"
+								right="16px"
+								top="50%"
+								transform="translateY(-50%)"
+								pointerEvents="none"
+							>
+								<Spinner
+									size="sm"
+									color={iconColor}
+								/>
+							</Box>
+						)}
+					</HStack>
 				</Box>
 
 				{/* Results */}
@@ -236,12 +285,47 @@ export const CommandSearch: React.FC<CommandSearchProps> = ({
 							p={8}
 							textAlign="center"
 						>
-							<Text
-								color={subtleTextColor}
-								fontSize="sm"
-							>
-								{emptyMessage || `No results found for "${search}"`}
-							</Text>
+							{isSearching ? (
+								<HStack
+									justify="center"
+									gap={3}
+								>
+									<Spinner
+										size="sm"
+										color={iconColor}
+									/>
+									<Text
+										color={subtleTextColor}
+										fontSize="sm"
+									>
+										Searching for "{search}"...
+									</Text>
+								</HStack>
+							) : search.trim() !== "" ? (
+								<Box>
+									<Text
+										color={subtleTextColor}
+										fontSize="sm"
+										mb={2}
+									>
+										{emptyMessage || `No notes found for "${search}"`}
+									</Text>
+									<Text
+										color={subtleTextColor}
+										fontSize="xs"
+									>
+										Press Enter or click "Create note" to create a new note with
+										this title
+									</Text>
+								</Box>
+							) : (
+								<Text
+									color={subtleTextColor}
+									fontSize="sm"
+								>
+									Start typing to search your notes...
+								</Text>
+							)}
 						</Box>
 					</Command.Empty>
 
