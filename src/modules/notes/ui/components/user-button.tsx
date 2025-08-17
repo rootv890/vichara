@@ -42,6 +42,7 @@ const UserButton = ({ isCollapsed, className }: Props) => {
 			borderColor={"gray.fg/10"}
 			pt={2}
 		>
+			{/* User Profile Button with Clerk Integration */}
 			<ClerkUserButton
 				appearance={{
 					elements: {
@@ -63,12 +64,16 @@ const UserButton = ({ isCollapsed, className }: Props) => {
 				showName={!isCollapsed}
 			/>
 
-			{/* More actions */}
+			{/*
+				=== MORE ACTIONS MENU ===
+				Contains additional actions like theme changer as requested.
+				This menu can be extended with more actions in the future.
+			*/}
 			<Box>
 				<MenuRoot>
 					<MenuTrigger asChild>
 						<IconButton
-							aria-label="More actions"
+							aria-label="More actions and settings"
 							size="xs"
 							padding={"2"}
 							variant="ghost"
@@ -77,7 +82,7 @@ const UserButton = ({ isCollapsed, className }: Props) => {
 							transition="all 0.15s ease"
 							onClick={(e) => {
 								e.stopPropagation()
-							}} // prevent link navigation
+							}} // Prevent event bubbling
 						>
 							<IoEllipsisHorizontalSharp className="size-3" />{" "}
 						</IconButton>
@@ -86,6 +91,7 @@ const UserButton = ({ isCollapsed, className }: Props) => {
 					<Portal>
 						<MenuPositioner zIndex={1000}>
 							<MenuContent rounded="xl">
+								{/* Theme Toggle - As requested in footer actions */}
 								<MenuItem
 									value="color-mode"
 									className="w-full"
@@ -100,11 +106,25 @@ const UserButton = ({ isCollapsed, className }: Props) => {
 									<Button
 										onClick={toggleColorMode}
 										color={"fg"}
+										aria-label={`Switch to ${
+											colorMode === "light" ? "dark" : "light"
+										} mode`}
 									>
 										<ColorModeIcon />
-										<span className="capitalize">Toggle Theme</span>
+										<span className="capitalize">
+											{colorMode === "light" ? "Dark" : "Light"} Theme
+										</span>
 									</Button>
 								</MenuItem>
+
+								{/*
+									Additional actions can be added here:
+									- Settings
+									- Help & Support
+									- Keyboard Shortcuts
+									- Export/Import
+									etc.
+								*/}
 							</MenuContent>
 						</MenuPositioner>
 					</Portal>

@@ -1,4 +1,54 @@
 "use client"
+/**
+ * ================================================================================
+ * REDESIGNED NOTES SIDEBAR - THREE-SECTION LAYOUT
+ * ================================================================================
+ *
+ * This sidebar implements a clean three-section layout using CSS Grid:
+ *
+ * 🏗️ LAYOUT STRUCTURE:
+ * ┌─────────────────────────────────────┐
+ * │ HEADER (auto height)                │ ← Row 1: Organization + Toggle + Search + New Note
+ * ├─────────────────────────────────────┤
+ * │                                     │
+ * │ BODY (1fr - fills remaining space)  │ ← Row 2: Notes List with scrolling
+ * │                                     │
+ * ├─────────────────────────────────────┤
+ * │ FOOTER (auto height)                │ ← Row 3: Trash + User Profile + Actions
+ * └─────────────────────────────────────┘
+ *
+ * 📐 GRID CONFIGURATION:
+ * - grid-template-rows: "auto 1fr auto"
+ * - Header and Footer take only natural space needed
+ * - Body expands to fill all remaining vertical space
+ * - Total height: 100vh (full viewport height)
+ *
+ * 📜 SCROLLING BEHAVIOR:
+ * - Header and Footer: Always visible, no scrolling
+ * - Body: Vertical scrolling when notes exceed available space
+ * - Nested Notes: Horizontal scrolling for deeply nested content
+ * - Custom scrollbar styling for better UX
+ *
+ * 🎯 KEY FEATURES:
+ * ✅ Responsive three-section layout
+ * ✅ Proper overflow handling in each section
+ * ✅ Nested notes support with visual hierarchy
+ * ✅ Resizable sidebar with drag handle
+ * ✅ Collapse/expand functionality
+ * ✅ Smooth transitions and hover states
+ * ✅ Accessibility support (ARIA labels, keyboard shortcuts)
+ *
+ * 🔧 COMPONENTS INCLUDED:
+ * - Organization Switcher (Header)
+ * - Sidebar Toggle Button (Header)
+ * - Command Palette Search (Header)
+ * - New Note Button (Header)
+ * - Notes List with Nesting (Body)
+ * - Trash Button (Footer)
+ * - User Profile + More Actions (Footer)
+ *
+ * ================================================================================
+ */
 import { Button } from "@/components/ui/button"
 import {
 	persistantCounter,
@@ -121,22 +171,21 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 		<Box
 			ref={ref}
 			as="aside"
-			// fixed so it doesn't wrap or push your page content
+			// Fixed positioning - doesn't affect page layout flow
 			pos="fixed"
 			top={0}
 			left={0}
-			h="full"
+			h="100vh" // Full viewport height as requested
 			maxH="100vh"
-			overflowY="auto"
-			// width is controlled via style (synced in effect + during drag)
-			// set an initial width as a fallback
+			overflow="hidden" // Prevent overflow on the main container
+			// Width controlled via style attribute (synced in effect + during drag)
 			w={`${sidebarWidth}px`}
 			minW={`${MIN_WIDTH}px`}
 			maxW={`${MAX_WIDTH}px`}
 			bg="bg.muted"
 			borderRight="1px solid"
 			borderColor={"gray.fg/10"}
-			// disable transform transition while dragging; keep it for collapse/expand
+			// Smooth transitions for collapse/expand, disabled during drag
 			transition={isDragging ? "none" : "transform 0.3s ease-in-out"}
 			transform={isCollapsed ? "translateX(-100%)" : "translateX(0)"}
 			p={2}
@@ -145,7 +194,10 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				"--hover-accent": "colors.bg.panel",
 			}}
 		>
-			{/* Drag handle (inside sidebar, right edge) */}
+			{/*
+				=== RESIZE HANDLE ===
+				Absolute positioned drag handle on the right edge for resizing
+			*/}
 			<Box
 				position="absolute"
 				right={0}
@@ -157,74 +209,89 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 				onDoubleClick={(e) => {
 					onToggle?.()
 					e.stopPropagation()
-					//  toggle sidebar
-				}} // prevent click from bubbling to sidebar
+				}}
 				_hover={{ bg: "gray.300" }}
 				role="separator"
 				aria-orientation="vertical"
+				aria-label="Resize sidebar"
 			/>
 
-			{/* Use CSS Grid for proper sticky footer layout */}
+			{/*
+				=== MAIN GRID LAYOUT ===
+				CSS Grid with 3 rows:
+				- Row 1 (Header): auto height - takes only natural space needed
+				- Row 2 (Body): 1fr - fills all remaining space
+				- Row 3 (Footer): auto height - takes only natural space needed
+			*/}
 			<Box
 				h="full"
 				w="full"
 				display="grid"
-				gridTemplateRows="auto 1fr auto"
+				gridTemplateRows="auto 1fr auto" // Header (auto) | Body (expand) | Footer (auto)
 				gridTemplateColumns="1fr"
-				gap={4}
+				gap={3} // Consistent spacing between sections
+				overflow="hidden" // Prevent grid container overflow
 			>
-				{/* Header - Fixed at top */}
-				<HStack
+				{/*
+					=== HEADER SECTION ===
+					Contains: Organization Switcher + Sidebar Toggle + Search + New Note
+					Height: auto (takes only space needed)
+				*/}
+				<Box
 					w="full"
-					justify="space-between"
-					align="center"
-					pb={1}
-					borderRadius="md"
-					borderBottom={"1px solid"}
-					borderColor={"gray.fg/10"}
-					minW={0} // Allow shrinking below content size
+					gridRow={1}
+					overflow="hidden" // Prevent header content overflow
 				>
-					<Box
-						flex="1"
-						minW={0}
+					{/* Organization Switcher + Toggle Button Row */}
+					<HStack
+						w="full"
+						justify="space-between"
+						align="center"
+						mb={3}
+						pb={2}
+						borderBottom="1px solid"
+						borderColor="gray.fg/10"
+						minW={0} // Allow content to shrink below natural size
 					>
-						{" "}
-						{/* Allow organization switcher to grow/shrink */}
-						<OrganizationSwitcher isCollapsed={false} />
-					</Box>
-					<Button
-						size="sm"
-						variant="ghost"
-						p="1"
-						onClick={onToggle}
-						aria-label="Close sidebar"
-						flexShrink={0} // Keep button size fixed
-					>
-						<IoIosArrowBack />
-					</Button>
-				</HStack>
+						{/* Organization Switcher - flexible width */}
+						<Box
+							flex="1"
+							minW={0} // Allow shrinking for overflow handling
+							overflow="hidden"
+						>
+							<OrganizationSwitcher isCollapsed={false} />
+						</Box>
 
-				{/* Content - Scrollable middle section */}
-				<VStack
-					align="stretch"
-					gap={2}
-					w="full"
-					flex="1"
-					minH={0} // Important: allows flex child to shrink below content size
-				>
+						{/* Sidebar Toggle Button - fixed width */}
+						<Button
+							size="sm"
+							variant="ghost"
+							p="1"
+							onClick={onToggle}
+							aria-label="Toggle sidebar"
+							flexShrink={0} // Maintain button size
+							ml={2}
+						>
+							<IoIosArrowBack />
+						</Button>
+					</HStack>
+
+					{/* Search + New Note Actions Row */}
 					<VStack
 						align="stretch"
 						gap={2}
 						w="full"
-						flexShrink={0} // Don't shrink the fixed elements
 					>
+						{/* Command Palette / Search Trigger */}
 						<SidebarSearchButton />
+
+						{/* New Note Button */}
 						<Button
 							variant="surface"
 							size="sm"
-							aria-label="New Note"
-							title="New Note"
-							border={"none"}
+							aria-label="Create new note"
+							title="Create new note"
+							border="none"
 							onClick={handleNewNote}
 							disabled={isLoading}
 							display="flex"
@@ -232,31 +299,96 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 							alignItems="center"
 							gap={3}
 							w="full"
+							_hover={{
+								bg: "bg.emphasized",
+							}}
 						>
 							<LuPlus />
-							<Text>{isLoading ? "Creating note..." : "New Note"}</Text>
+							<Text fontWeight="medium">
+								{isLoading ? "Creating note..." : "New Note"}
+							</Text>
 						</Button>
 					</VStack>
-					{/* Scrollable list container */}
+				</Box>
+
+				{/*
+					=== BODY SECTION ===
+					Contains: Sidebar List (notes/folders with nesting support)
+					Height: 1fr (fills all remaining space between header and footer)
+					Scrolling: Vertical scrolling when content exceeds available space
+					Horizontal: Enabled for nested items that exceed width
+				*/}
+				<Box
+					w="full"
+					gridRow={2}
+					overflow="hidden" // Container doesn't overflow
+					display="flex"
+					flexDirection="column"
+					minH={0} // Critical: allows flex child to shrink below content size
+				>
+					{/*
+						Notes List Container with Scroll Management
+						- Vertical scroll when notes exceed available height
+						- Horizontal scroll for deeply nested items
+						- Maintains proper nested hierarchy
+					*/}
 					<Box
 						flex="1"
-						minH={0}
 						w="full"
+						overflowY="auto" // Vertical scrolling for long lists
+						overflowX="auto" // Horizontal scrolling for nested content
+						minH={0} // Allow shrinking below content
+						// Custom scrollbar styling
+						css={{
+							"&::-webkit-scrollbar": {
+								width: "6px",
+							},
+							"&::-webkit-scrollbar-track": {
+								background: "transparent",
+							},
+							"&::-webkit-scrollbar-thumb": {
+								background: "var(--chakra-colors-gray-400)",
+								borderRadius: "3px",
+							},
+							"&::-webkit-scrollbar-thumb:hover": {
+								background: "var(--chakra-colors-gray-500)",
+							},
+						}}
 					>
+						{/*
+							SidebarList Component:
+							- Renders all notes with nested structure
+							- Handles expansion/collapse of nested items
+							- Supports infinite nesting levels
+							- Optimized scrolling behavior
+						*/}
 						<SidebarList />
 					</Box>
-				</VStack>
+				</Box>
 
-				{/* Footer - Fixed at bottom */}
-				<VStack
+				{/*
+					=== FOOTER SECTION ===
+					Contains: Trash Button + User Profile + More Actions (theme changer)
+					Height: auto (takes only space needed)
+					Always visible at bottom
+				*/}
+				<Box
 					w="full"
-					gap={2}
-					flexShrink={0} // Don't shrink the footer
-					minW={0} // Allow shrinking below content size
+					gridRow={3}
+					overflow="hidden" // Prevent footer overflow
 				>
-					<Trash />
-					<UserButton isCollapsed={false} />
-				</VStack>
+					<VStack
+						w="full"
+						gap={2}
+						align="stretch"
+					>
+						{/* Trash/Recycle Bin Button */}
+						<Trash />
+
+						{/* User Profile + More Actions */}
+						<UserButton isCollapsed={false} />
+					</VStack>
+				</Box>
 			</Box>
 		</Box>
 	)
