@@ -1,47 +1,15 @@
 "use client"
-/**
- * ================================================================================
- * SIDEBAR LIST COMPONENT - NOTES WITH NESTING SUPPORT
- * ================================================================================
- *
- * This component handles the display of notes with the following features:
- *
- * 🌳 NESTING BEHAVIOR:
- * - Supports unlimited levels of nested notes/folders
- * - Visual hierarchy with indentation (4px * level)
- * - Expand/collapse functionality for parent notes
- * - Visual connectors (border lines) for nested structure
- *
- * 📜 SCROLLING MANAGEMENT:
- * - Top Level: Vertical scrolling when notes exceed available height
- * - Nested Levels: Horizontal overflow handled gracefully
- * - Smooth scrolling behavior with custom scrollbar styling
- * - Performance optimized for large note collections
- *
- * 🎯 OVERFLOW HANDLING:
- * - Long note titles: Truncated with ellipsis
- * - Deep nesting: Horizontal scroll or action menus prevent layout breaking
- * - Actions on hover: + button and ... menu for note operations
- *
- * 🔧 RESPONSIVE FEATURES:
- * - Adapts to sidebar width changes
- * - Maintains usability across different screen sizes
- * - Touch-friendly spacing and targets
- *
- * ================================================================================
- */
-import { BouncyLoading, CardioLoading } from "@/components/loadings"
+
 import { expandedNotesAtom, isSidebarCollapsed } from "@/modules/atoms/atoms"
-import { Box, Button, Collapsible, Flex, For, VStack } from "@chakra-ui/react"
+import { Box, For, VStack } from "@chakra-ui/react"
 import { api } from "@convex/_generated/api"
 import { Id } from "@convex/_generated/dataModel"
 import { useQuery } from "convex/react"
 import { useAtomValue, useSetAtom } from "jotai/react"
 
 import React from "react"
-import { FaHistory } from "react-icons/fa"
-import { GoTriangleRight } from "react-icons/go"
-import NoteSidebarItem, { EmptyNoteSidebarItem } from "./note-sidebar-item"
+import { EmptyNoteSidebarItem } from "./empty-sidebar"
+import NoteSidebarItem from "./note-sidebar-item"
 
 type Props = {
 	level?: number
@@ -62,12 +30,12 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 		}))
 	}
 
-	if (notes === undefined) return <BouncyLoading label="Loading notes bro..." />
+	if (notes === undefined) return <Box>Loading notes...</Box>
 
-	const renderNotes = () => (
+	const renderNotes = (isRoot = false) => (
 		<For
 			each={notes}
-			fallback={<EmptyNoteSidebarItem />}
+			fallback={isRoot ? <EmptyNoteSidebarItem /> : null}
 		>
 			{(note) => (
 				<React.Fragment key={note._id}>
@@ -95,13 +63,6 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 				w="full"
 				overflow="visible" // Allow content to determine width
 			>
-				{/*
-					=== NESTED NOTES CONTAINER ===
-					- Indented with left margin for visual hierarchy
-					- Supports unlimited nesting levels
-					- Handles horizontal overflow gracefully
-					- Visual indicators for nesting structure
-				*/}
 				<VStack
 					w="full"
 					align="stretch"
@@ -147,7 +108,6 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 		)
 	}
 
-	// Top level with scrollable container
 	return (
 		<Box
 			w="full"
@@ -156,12 +116,6 @@ const SidebarList = ({ level = 0, parentNoteId }: Props) => {
 			display="flex"
 			flexDirection="column"
 		>
-			{/*
-				=== NOTES LIST CONTAINER ===
-				Handles vertical scrolling for long lists
-				Enables horizontal scrolling for nested content that exceeds width
-				Maintains smooth scrolling performance
-			*/}
 			<Box
 				w="full"
 				h="full"

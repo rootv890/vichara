@@ -21,6 +21,7 @@ import { api } from "@convex/_generated/api"
 import { Id } from "@convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
 import Image from "next/image"
+import Link from "next/link"
 import { LuArchiveRestore, LuTrash2 } from "react-icons/lu"
 type Props = {}
 
@@ -118,7 +119,20 @@ const TrashList = (props: Props) => {
 			<Table.Cell
 				dangerouslySetInnerHTML={{ __html: processNoteIcon(item.icon) }}
 			/>
-			<Table.Cell>{item.title}</Table.Cell>
+			<Table.Cell
+				_hover={{
+					bg: "bg.subtle",
+					cursor: "pointer",
+					textDecoration: "underline",
+				}}
+			>
+				<Link
+					className="hover:underline"
+					href={`/notes/${item._id}`}
+				>
+					{item.title}
+				</Link>
+			</Table.Cell>
 			<Table.Cell className="">{toRelative(item._creationTime)}</Table.Cell>
 			<Table.Cell className="">
 				{toRelative(item.archivedAt ?? "N/A")}

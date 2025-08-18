@@ -35,7 +35,6 @@ const NoteIdLayout = ({ children }: Props) => {
 				bg={"bg"}
 				color={"fg"}
 			>
-				<NoteIdNav />
 				{children}
 			</VStack>
 		</HStack>

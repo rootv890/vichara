@@ -165,7 +165,6 @@ export const hasChildren = query({
 				)
 			)
 			.first()
-
 		return !!childNote
 	},
 })
@@ -388,6 +387,7 @@ export const updateNote = mutation({
 				code: "FORBIDDEN",
 			})
 
+		// Cannot update archived notes
 		if (existingNote.isArchived)
 			throw new ConvexError({
 				message: "Cannot update archived note",

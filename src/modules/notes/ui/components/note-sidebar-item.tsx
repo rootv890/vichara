@@ -1,15 +1,12 @@
 "use client"
 import { CgRename } from "react-icons/cg"
 
-import { cn, processNoteIcon } from "@/lib/utils"
+import { processNoteIcon } from "@/lib/utils"
 import { isSidebarCollapsed, persistantCounter } from "@/modules/atoms"
 import {
-	Box,
 	Button,
-	EmptyState,
 	HStack,
 	IconButton,
-	Link,
 	MenuArrow,
 	MenuContent,
 	MenuItem,
@@ -27,16 +24,14 @@ import { api } from "@convex/_generated/api"
 import { Doc } from "@convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
 import { useAtomValue, useSetAtom } from "jotai/react"
-import Image from "next/image"
 import NextLink from "next/link"
 
-import { CloseButton, Dialog } from "@chakra-ui/react"
 import { usePathname, useRouter } from "next/navigation"
 import React from "react"
 import toast from "react-hot-toast"
 import { GoTriangleDown, GoTriangleRight } from "react-icons/go"
 import { IoEllipsisHorizontalSharp } from "react-icons/io5"
-import { LuDelete, LuPlus, LuTrash2 } from "react-icons/lu"
+import { LuPlus, LuTrash2 } from "react-icons/lu"
 import { useCreateNote } from "../../hooks/use-create-note"
 
 type Props = {
@@ -109,10 +104,10 @@ const NoteSidebarItem = ({
 
 		toast.promise(archive({ id: note._id }), {
 			loading: "Moving to trash...",
-			success: "Note deleted successfully!",
+			success: "Note moved to trash successfully!",
 			error: (error) => {
-				console.error("Error deleting note:", error)
-				return "Failed to Delete note"
+				console.error("Error moving note:", error)
+				return "Failed to move note to trash"
 			},
 		})
 	}
@@ -131,7 +126,7 @@ const NoteSidebarItem = ({
 				rounded="md"
 				px={3}
 				py={1}
-				w={`calc(100% - var(--indent))`}
+				w={`calc(100% - var(--indent)*${level})`}
 				minW={0}
 				overflow="hidden"
 				align="center"
@@ -269,15 +264,12 @@ const NoteSidebarItem = ({
 										value="delete"
 										color="red.fg"
 										_hover={{ bg: "red.500/50" }}
-										onClick={(e) => {
-											e.stopPropagation()
-											setConfirmDelete(true)
-										}}
+										onClick={handleArchive}
 										rounded={"lg"}
 										className="flex items-center gap-2 justify-start "
 									>
 										<LuTrash2 className="size-3" />
-										Delete
+										Move to Trash
 									</MenuItem>
 								</MenuContent>
 							</MenuPositioner>
@@ -285,112 +277,8 @@ const NoteSidebarItem = ({
 					</MenuRoot>
 				</HStack>
 			</HStack>
-
-			{/* Delete Dialog - Moved outside the menu */}
-			<DeleteDialog
-				noteId={note._id}
-				onDelete={handleArchive}
-				confirmDelete={confirmDelete}
-				setConfirmDelete={setConfirmDelete}
-			/>
 		</>
 	)
 }
 
 export default NoteSidebarItem
-
-export const EmptyNoteSidebarItem = () => {
-	return (
-		<EmptyState.Root
-			color={"fg"}
-			textAlign={"center"}
-		>
-			<EmptyState.Content gap={2}>
-				<EmptyState.Indicator>
-					<Image
-						src="/illustrations/empty-notes.svg"
-						alt="No notes"
-						width={100}
-						height={100}
-					/>
-				</EmptyState.Indicator>
-				<EmptyState.Title>No notes to show</EmptyState.Title>
-				<EmptyState.Description>
-					Create one to get started!
-				</EmptyState.Description>
-			</EmptyState.Content>
-		</EmptyState.Root>
-	)
-}
-
-const DeleteDialog = ({
-	noteId,
-	onDelete,
-	confirmDelete = false,
-	setConfirmDelete,
-}: {
-	noteId: string
-	onDelete?: () => void
-	confirmDelete: boolean
-	setConfirmDelete: (value: boolean) => void
-}) => {
-	return (
-		<Dialog.Root
-			open={confirmDelete}
-			onOpenChange={(e) => setConfirmDelete(e.open)}
-			role="alertdialog"
-			placement={"center"}
-			motionPreset="slide-in-bottom"
-			size={"sm"}
-		>
-			<Portal>
-				{/* <Dialog.Backdrop /> */}
-				<Dialog.Positioner>
-					<Dialog.Content
-						bg={"bg"}
-						color={"fg"}
-						rounded="lg"
-					>
-						<Dialog.Header>
-							<Dialog.Title>
-								Are you sure you want to delete this note?
-							</Dialog.Title>
-						</Dialog.Header>
-						<Dialog.Body>
-							<p>
-								Deleting this note will remove all its content and any nested
-								notes will also be deleted. Can be recovered from the{" "}
-								<Link
-									href="/trash"
-									variant={"underline"}
-								>
-									trash
-								</Link>
-								.
-							</p>
-						</Dialog.Body>
-						<Dialog.Footer>
-							<Dialog.ActionTrigger asChild>
-								<Button variant="outline">Cancel</Button>
-							</Dialog.ActionTrigger>
-							<Button
-								bg={"red.subtle"}
-								color={"red.fg"}
-								onClick={() => {
-									onDelete?.()
-									setConfirmDelete(false)
-								}}
-								loadingText="Deleting..."
-							>
-								Delete
-							</Button>
-						</Dialog.Footer>
-						<Dialog.CloseTrigger asChild>
-							<CloseButton size="sm" />
-						</Dialog.CloseTrigger>
-					</Dialog.Content>
-				</Dialog.Positioner>
-			</Portal>
-		</Dialog.Root>
-	)
-}

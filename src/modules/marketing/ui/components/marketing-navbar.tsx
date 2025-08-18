@@ -9,7 +9,7 @@ import Image from "next/image"
 import Link from "next/link"
 import React from "react"
 import { LuArrowRight, LuLogIn } from "react-icons/lu"
-import { transform } from "zod"
+
 import { useScrollTop } from "../../hooks/use-scroll-top"
 
 type Props = {}
