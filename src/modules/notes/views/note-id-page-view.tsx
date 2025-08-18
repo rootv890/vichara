@@ -46,8 +46,6 @@ const NoteIdPageView = ({}: Props) => {
 			align="stretch"
 			w={"100%"}
 			h={"full"}
-			color={"fg"}
-			bg={"bg"}
 		>
 			<NoteIdNav />
 			<NoteBanner currentNoteId={currentNoteId} />

@@ -23,7 +23,7 @@ export const buttonRecipe = defineRecipe({
 		userSelect: "none",
 
 		_focusVisible: {
-			boxShadow: "0 0 0 3px var(--chakra-colors-blue-400)",
+			boxShadow: "0 0 0 3px {colors.blue.focusRing}",
 			outline: "none",
 		},
 		_disabled: {
@@ -35,36 +35,31 @@ export const buttonRecipe = defineRecipe({
 	variants: {
 		variant: {
 			solid: {
-				bg: "gray.900",
-				color: "white",
+				bg: "gray.solid",
+				color: "gray.contrast",
 				_hover: {
-					bg: "gray.800",
+					bg: "gray.emphasized",
 					transform: "translateY(-1px) scale(1.02)", // duolingo bounce
 				},
 				_active: {
-					bg: "gray.700",
+					bg: "gray.muted",
 					transform: "scale(0.98)",
-				},
-				_dark: {
-					bg: "white",
-					color: "gray.900",
-					_hover: { bg: "gray.100", transform: "translateY(-1px) scale(1.02)" },
-					_active: { bg: "gray.200", transform: "scale(0.98)" },
 				},
 			},
 
 			subtle: {
 				bg: "bg.muted",
 				color: "fg",
-				border: "2px solid", // duolingo = thicker
+				border: "2px solid",
 				borderColor: "border.subtle",
 				_hover: {
-					bg: "bg.subtle",
-					borderColor: "border.emphasized",
+					bg: "bg.emphasized", // Correct progression: muted → emphasized
+					borderColor: "border.muted",
 					transform: "translateY(-1px) scale(1.02)",
 				},
 				_active: {
-					bg: "bg.emphasized",
+					bg: "bg.subtle", // Final state: lightest
+					borderColor: "border.emphasized",
 					transform: "scale(0.98)",
 				},
 			},
@@ -76,11 +71,12 @@ export const buttonRecipe = defineRecipe({
 				borderColor: "border.emphasized",
 				_hover: {
 					bg: "bg.subtle",
-					borderColor: "fg",
+					borderColor: "border.muted",
 					transform: "translateY(-1px) scale(1.02)",
 				},
 				_active: {
 					bg: "bg.muted",
+					borderColor: "border.subtle",
 					transform: "scale(0.98)",
 				},
 			},
@@ -96,6 +92,7 @@ export const buttonRecipe = defineRecipe({
 				},
 				_active: {
 					bg: "bg.muted",
+					color: "fg.emphasized",
 					transform: "scale(0.98)",
 				},
 			},
@@ -107,8 +104,13 @@ export const buttonRecipe = defineRecipe({
 				h: "auto",
 				minW: "auto",
 				fontWeight: "500",
-				_hover: { color: "fg", textDecoration: "underline" },
-				_active: { color: "fg.emphasized" },
+				_hover: {
+					color: "fg",
+					textDecoration: "underline",
+				},
+				_active: {
+					color: "fg.emphasized",
+				},
 			},
 		},
 

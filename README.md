@@ -196,3 +196,7 @@ If you have any questions or need help, please:
 <div align="center">
   <strong>Built with ❤️ by the VICHARA team</strong>
 </div>
+
+Audit manual color props throughout components
+Test with clean Chakra color mode instead of next-themes
+Remove global focus disable and let Chakra handle focus states

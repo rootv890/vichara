@@ -1,9 +1,10 @@
 import { currentActiveNoteIdAtom } from "@/modules/atoms"
-import { Badge, HStack } from "@chakra-ui/react"
+import { Badge, Flex, Group, HStack } from "@chakra-ui/react"
 import { api } from "@convex/_generated/api"
 import { useQuery } from "convex/react"
 import { useAtomValue } from "jotai/react"
 import React from "react"
+import NavMenu from "./nav-menu"
 import EditableTitle from "./title-editable"
 
 type Props = {}
@@ -27,11 +28,16 @@ const NoteIdNav = (props: Props) => {
 			bg={"bg.panel"}
 			justify={"space-between"}
 		>
-			<EditableTitle variant="navbar" />
-			{/* Archived?? */}
+			<Group>
+				<EditableTitle variant="navbar" />
+				{/* Archived?? */}
+			</Group>
 			<Badge colorPalette={fetchedNote.isArchived ? "red" : "green"}>
 				{fetchedNote.isArchived ? "Archived" : "Active"}
 			</Badge>
+
+			{/* Archived?? */}
+			<NavMenu />
 		</HStack>
 	)
 }

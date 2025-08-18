@@ -116,8 +116,8 @@ const NoteSidebarItem = ({
 		<>
 			<HStack
 				gap={1}
-				bg={isActive ? "gray.fg/30" : "transparent"}
-				_hover={{ bg: "bg" }}
+				bg={isActive ? "bg.emphasized" : "transparent"}
+				_hover={{ bg: "bg.subtle" }}
 				transition="background 0.2s ease"
 				// Use margin-left for indent and subtract it from width to avoid clipping
 				// CSS var allows calc without re-rendering style strings everywhere
@@ -154,7 +154,7 @@ const NoteSidebarItem = ({
 								e.preventDefault()
 								onExpand?.()
 							}}
-							_hover={{ bg: "bg.emphasized" }}
+							_hover={{ bg: "bg.muted" }}
 						>
 							{expanded ? (
 								<GoTriangleDown className="size-3" />
@@ -171,13 +171,12 @@ const NoteSidebarItem = ({
 						<Text
 							as="span"
 							fontSize="xs"
-							color={"fg.subtle"}
+							color="fg.subtle"
 							dangerouslySetInnerHTML={{ __html: processNoteIcon(note.icon) }}
 						/>
 						{!isCollapsed && (
 							<Text
 								fontSize={"sm"}
-								color="fg"
 								fontWeight="medium"
 								truncate
 							>
@@ -190,7 +189,6 @@ const NoteSidebarItem = ({
 					gap={1}
 					alignItems={"center"}
 					justify={"center"}
-					color={"fg"}
 					flexShrink={0}
 				>
 					<Button
@@ -199,7 +197,7 @@ const NoteSidebarItem = ({
 						variant="ghost"
 						opacity={1}
 						h={"fit"}
-						_hover={{ bg: "bg.emphasized" }}
+						_hover={{ bg: "bg.muted" }}
 						transition="all 0.15s ease"
 						onClick={handleNewNote}
 						p={"0!important"}
@@ -216,7 +214,7 @@ const NoteSidebarItem = ({
 								variant="ghost"
 								opacity={1}
 								h={"16px"}
-								_hover={{ bg: "bg.emphasized" }}
+								_hover={{ bg: "bg.muted" }}
 								transition="all 0.15s ease"
 								onClick={(e) => {
 									e.stopPropagation()
@@ -262,8 +260,8 @@ const NoteSidebarItem = ({
 
 									<MenuItem
 										value="delete"
-										color="red.fg"
-										_hover={{ bg: "red.500/50" }}
+										colorPalette="red"
+										_hover={{ bg: "red.subtle" }}
 										onClick={handleArchive}
 										rounded={"lg"}
 										className="flex items-center gap-2 justify-start "
