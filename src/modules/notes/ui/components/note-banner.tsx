@@ -23,7 +23,7 @@ import { Id } from "@convex/_generated/dataModel"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 import useFetchNotes from "../../hooks/use-fetch-notes"
-import useRestoreNote from "../../hooks/useRestoreNote"
+import useRestoreNote from "../../hooks/use-restore-note"
 type Props = {
 	currentNoteId: Id<"notes"> | null
 }
@@ -85,10 +85,13 @@ const NoteBanner = ({ currentNoteId }: Props) => {
 			<Box>
 				<Button
 					size="sm"
-					variant="outline"
-					colorScheme="green"
+					variant="subtle"
+					colorPalette="green"
+					color={"colorPalette.fg"}
+					bg={"colorPalette.subtle"}
 					mr={2}
 					onClick={() => setConfirmRestore(true)}
+					border={"none"}
 				>
 					<LuArchiveRestore />
 					Restore
@@ -97,7 +100,7 @@ const NoteBanner = ({ currentNoteId }: Props) => {
 					size="sm"
 					colorPalette="red"
 					color={"colorPalette.fg"}
-					bg={"colorPalette.300"}
+					bg={"colorPalette.subtle"}
 					onClick={() => setConfirmDelete(true)}
 				>
 					<LuTrash2 />

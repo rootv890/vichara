@@ -61,7 +61,3 @@ body {
 	display: none;
 	height: 0;
 }
-
-#headlessui-portal-root > * {
-	z-index: 999999 !important;
-}

@@ -51,3 +51,8 @@ export const notesStatusAtom = atomWithStorage<notesStatusAtom>(
 
 // ─── Miscellaneous ─────────────────────────────────────────
 export const persistantCounter = atomWithStorage<number>("persistantCounter", 0)
+
+export const isNoteHeaderToolbarVisibleAtom = atomWithStorage<boolean>(
+	"noteHeaderToolbarVisible",
+	false
+)

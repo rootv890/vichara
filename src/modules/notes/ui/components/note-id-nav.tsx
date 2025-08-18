@@ -1,9 +1,10 @@
 import { currentActiveNoteIdAtom } from "@/modules/atoms"
-import { Badge, Flex, Group, HStack } from "@chakra-ui/react"
+import { Badge, Button, Flex, Group, HStack } from "@chakra-ui/react"
 import { api } from "@convex/_generated/api"
 import { useQuery } from "convex/react"
 import { useAtomValue } from "jotai/react"
 import React from "react"
+import toast from "react-hot-toast"
 import NavMenu from "./nav-menu"
 import EditableTitle from "./title-editable"
 
@@ -37,7 +38,18 @@ const NoteIdNav = (props: Props) => {
 			</Badge>
 
 			{/* Archived?? */}
-			<NavMenu />
+			<HStack>
+				<Button
+					variant={"ghost"}
+					size={"sm"}
+					onClick={() => {
+						toast.error("This feature is not implemented yet")
+					}}
+				>
+					Publish
+				</Button>
+				<NavMenu />
+			</HStack>
 		</HStack>
 	)
 }

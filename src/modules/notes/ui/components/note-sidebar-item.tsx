@@ -1,6 +1,4 @@
 "use client"
-import { CgRename } from "react-icons/cg"
-
 import { processNoteIcon } from "@/lib/utils"
 import { isSidebarCollapsed, persistantCounter } from "@/modules/atoms"
 import {
@@ -19,6 +17,8 @@ import {
 	Text,
 } from "@chakra-ui/react"
 import { useClerk } from "@clerk/nextjs"
+import { CgRename } from "react-icons/cg"
+import { HiOutlineDocumentDuplicate } from "react-icons/hi"
 
 import { api } from "@convex/_generated/api"
 import { Doc } from "@convex/_generated/dataModel"
@@ -33,6 +33,7 @@ import { GoTriangleDown, GoTriangleRight } from "react-icons/go"
 import { IoEllipsisHorizontalSharp } from "react-icons/io5"
 import { LuPlus, LuTrash2 } from "react-icons/lu"
 import { useCreateNote } from "../../hooks/use-create-note"
+import useNoteDuplication from "../../hooks/use-note-duplication"
 
 type Props = {
 	note: Doc<"notes">
@@ -58,6 +59,7 @@ const NoteSidebarItem = ({
 	const isActive = pathname.includes(note._id)
 	const persistantCounterNum = useAtomValue(persistantCounter)
 	const setPersistantCounter = useSetAtom(persistantCounter)
+	const { duplicateNote } = useNoteDuplication()
 
 	function handleNewNote() {
 		if (!organization?.id || !user?.id) {
@@ -83,6 +85,28 @@ const NoteSidebarItem = ({
 				if (onExpand && !expanded) onExpand()
 				// Navigate to the newly created note, not the parent
 				router.push(`/notes/${newNoteId}`)
+			})
+	}
+
+	function handleDuplicateNote() {
+		if (!note._id) {
+			toast.error("No note selected to duplicate")
+			return
+		}
+		toast(`noteId ${note._id}`)
+
+		toast
+			.promise(duplicateNote(note._id), {
+				loading: "Duplicating note...",
+				success: "Note duplicated!",
+				error: (err) => `Error duplicating note: ${err.message}`,
+			})
+			.then((newNoteId) => {
+				// console.log("New NoteID:", newNoteId)
+				router.push(`/notes/${newNoteId}`)
+			})
+			.catch((error) => {
+				toast.error(`Error duplicating note: ${error.message}`)
 			})
 	}
 
@@ -253,6 +277,15 @@ const NoteSidebarItem = ({
 											<LuPlus className="size-3" />
 											New Note
 										</MenuItem>
+										<MenuItem
+											value="duplicate"
+											onClick={handleDuplicateNote}
+											rounded={"lg"}
+											className="flex items-center gap-2 justify-start "
+										>
+											<HiOutlineDocumentDuplicate className="size-3" />
+											Duplicate Note
+										</MenuItem>
 									</MenuItemGroup>
 
 									<MenuSeparator />
@@ -262,6 +295,7 @@ const NoteSidebarItem = ({
 										value="delete"
 										colorPalette="red"
 										_hover={{ bg: "red.subtle" }}
+										color={"colorPalette.fg"}
 										onClick={handleArchive}
 										rounded={"lg"}
 										className="flex items-center gap-2 justify-start "

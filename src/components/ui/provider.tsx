@@ -39,7 +39,7 @@ export const buttonRecipe = defineRecipe({
 				color: "gray.contrast",
 				_hover: {
 					bg: "gray.emphasized",
-					transform: "translateY(-1px) scale(1.02)", // duolingo bounce
+					transform: "translateY(-1px) ", // duolingo bounce
 				},
 				_active: {
 					bg: "gray.muted",
@@ -55,7 +55,7 @@ export const buttonRecipe = defineRecipe({
 				_hover: {
 					bg: "bg.emphasized", // Correct progression: muted → emphasized
 					borderColor: "border.muted",
-					transform: "translateY(-1px) scale(1.02)",
+					transform: "translateY(-1px) ",
 				},
 				_active: {
 					bg: "bg.subtle", // Final state: lightest
@@ -72,7 +72,7 @@ export const buttonRecipe = defineRecipe({
 				_hover: {
 					bg: "bg.subtle",
 					borderColor: "border.muted",
-					transform: "translateY(-1px) scale(1.02)",
+					transform: "translateY(-1px) ",
 				},
 				_active: {
 					bg: "bg.muted",
@@ -88,7 +88,7 @@ export const buttonRecipe = defineRecipe({
 				_hover: {
 					bg: "bg.subtle",
 					color: "fg",
-					transform: "translateY(-1px) scale(1.02)",
+					transform: "translateY(-1px) ",
 				},
 				_active: {
 					bg: "bg.muted",
@@ -140,6 +140,7 @@ const config = defineConfig({
 		},
 	},
 })
+
 const system = createSystem(defaultConfig, config)
 
 export const textStyles = defineTextStyles({

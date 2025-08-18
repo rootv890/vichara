@@ -1,10 +1,9 @@
 "use client"
-import { ColorModeButton } from "@/components/ui/color-mode"
+import { ColorModeButton, useColorMode } from "@/components/ui/color-mode"
 import { cn } from "@/lib/utils"
 import { Box, Button, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react"
 import { SignInButton, UserButton } from "@clerk/nextjs"
 import { useConvexAuth } from "convex/react"
-import { useTheme } from "next-themes"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
@@ -17,7 +16,7 @@ type Props = {}
 function MarketingNavbar({}: Props) {
 	const scrolled = useScrollTop()
 	const { isAuthenticated, isLoading } = useConvexAuth()
-	const { theme } = useTheme()
+	const { colorMode } = useColorMode()
 	return (
 		<Box
 			className={cn("", {
@@ -44,7 +43,7 @@ function MarketingNavbar({}: Props) {
 					alignItems={"center"}
 					justify={"center"}
 				>
-					{theme === "light" && (
+					{colorMode === "light" && (
 						<Image
 							src={"/logo-dark.svg"}
 							alt="Logo"
@@ -53,7 +52,7 @@ function MarketingNavbar({}: Props) {
 							className={cn("transition-all ease-in-out duration-300 ")}
 						/>
 					)}
-					{theme === "dark" && (
+					{colorMode === "dark" && (
 						<Image
 							src={"/logo-light.svg"}
 							alt="Logo"

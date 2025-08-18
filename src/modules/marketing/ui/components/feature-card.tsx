@@ -1,4 +1,5 @@
 "use client"
+import { useColorMode } from "@/components/ui/color-mode"
 import {
 	Box,
 	Card,
@@ -11,7 +12,6 @@ import {
 	Tag,
 	Text,
 } from "@chakra-ui/react"
-import { useTheme } from "next-themes"
 import { ReactElement } from "react"
 import { IconType } from "react-icons"
 
@@ -44,14 +44,14 @@ export function FeatureCard({
 	gridRow,
 	children,
 }: FeatureCardProps) {
-	const { theme } = useTheme()
+	const { colorMode } = useColorMode()
 	return (
 		<Card.Root
 			gridColumn={gridColumn}
 			gridRow={gridRow}
 			borderRadius="2xl"
 			border="none"
-			bg={theme === "dark" ? "bg.panel" : "bg.emphasized"}
+			bg={colorMode === "dark" ? "bg.panel" : "bg.emphasized"}
 			cursor={"pointer"}
 			rounded="2xl"
 			_hover={{

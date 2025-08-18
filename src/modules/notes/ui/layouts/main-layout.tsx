@@ -11,7 +11,7 @@ const MainLayout = ({ children }: Props) => {
 	return (
 		<AuthGuard>
 			<CommandSearchProvider>
-				<Toaster position="top-right" />
+				<Toaster position="bottom-right" />
 				<CommandMenu />
 				{children}
 			</CommandSearchProvider>

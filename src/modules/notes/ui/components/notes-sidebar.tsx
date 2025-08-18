@@ -1,62 +1,12 @@
 "use client"
-/**
- * ================================================================================
- * REDESIGNED NOTES SIDEBAR - THREE-SECTION LAYOUT
- * ================================================================================
- *
- * This sidebar implements a clean three-section layout using CSS Grid:
- *
- * 🏗️ LAYOUT STRUCTURE:
- * ┌─────────────────────────────────────┐
- * │ HEADER (auto height)                │ ← Row 1: Organization + Toggle + Search + New Note
- * ├─────────────────────────────────────┤
- * │                                     │
- * │ BODY (1fr - fills remaining space)  │ ← Row 2: Notes List with scrolling
- * │                                     │
- * ├─────────────────────────────────────┤
- * │ FOOTER (auto height)                │ ← Row 3: Trash + User Profile + Actions
- * └─────────────────────────────────────┘
- *
- * 📐 GRID CONFIGURATION:
- * - grid-template-rows: "auto 1fr auto"
- * - Header and Footer take only natural space needed
- * - Body expands to fill all remaining vertical space
- * - Total height: 100vh (full viewport height)
- *
- * 📜 SCROLLING BEHAVIOR:
- * - Header and Footer: Always visible, no scrolling
- * - Body: Vertical scrolling when notes exceed available space
- * - Nested Notes: Horizontal scrolling for deeply nested content
- * - Custom scrollbar styling for better UX
- *
- * 🎯 KEY FEATURES:
- * ✅ Responsive three-section layout
- * ✅ Proper overflow handling in each section
- * ✅ Nested notes support with visual hierarchy
- * ✅ Resizable sidebar with drag handle
- * ✅ Collapse/expand functionality
- * ✅ Smooth transitions and hover states
- * ✅ Accessibility support (ARIA labels, keyboard shortcuts)
- *
- * 🔧 COMPONENTS INCLUDED:
- * - Organization Switcher (Header)
- * - Sidebar Toggle Button (Header)
- * - Command Palette Search (Header)
- * - New Note Button (Header)
- * - Notes List with Nesting (Body)
- * - Trash Button (Footer)
- * - User Profile + More Actions (Footer)
- *
- * ================================================================================
- */
-import { Button } from "@/components/ui/button"
+
 import {
 	gutterWidthAtom,
 	persistantCounter,
 	sidebarWidthAtom,
 	useOrganization,
 } from "@/modules/atoms"
-import { Box, HStack, Text, VStack } from "@chakra-ui/react"
+import { Box, Button, HStack, Text, VStack } from "@chakra-ui/react"
 import { useUser } from "@clerk/nextjs"
 import { useAtomValue, useSetAtom } from "jotai/react"
 import React from "react"
@@ -296,21 +246,12 @@ const NotesSidebar = ({ isCollapsed, onToggle }: Props) => {
 
 						{/* New Note Button */}
 						<Button
-							variant="surface"
-							size="sm"
-							aria-label="Create new note"
-							title="Create new note"
-							border="none"
+							variant="ghost"
 							onClick={handleNewNote}
 							disabled={isLoading}
-							display="flex"
-							justifyContent="flex-start"
-							alignItems="center"
 							gap={3}
-							w="full"
-							_hover={{
-								bg: "bg.emphasized",
-							}}
+							justifyContent={"flex-start"}
+							rounded={"lg"}
 						>
 							<LuPlus />
 							<Text fontWeight="medium">

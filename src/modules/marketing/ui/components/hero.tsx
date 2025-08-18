@@ -1,4 +1,5 @@
 "use client"
+import { useColorMode } from "@/components/ui/color-mode"
 import { cn } from "@/lib/utils"
 import {
 	Box,
@@ -17,7 +18,6 @@ import {
 } from "@chakra-ui/react"
 import { SignInButton } from "@clerk/nextjs"
 import { useConvexAuth } from "convex/react"
-import { useTheme } from "next-themes"
 import Link from "next/link"
 import {
 	LuArrowRight,
@@ -29,7 +29,7 @@ import {
 } from "react-icons/lu"
 
 export function HeroSection() {
-	const { theme } = useTheme()
+	const { colorMode } = useColorMode()
 	const { isAuthenticated, isLoading } = useConvexAuth()
 	return (
 		<Box
@@ -51,7 +51,7 @@ export function HeroSection() {
 					align="center"
 					mb={12}
 				>
-					{theme === "light" && (
+					{colorMode === "light" && (
 						<Image
 							src={"/logo-dark.svg"}
 							alt="Logo"
@@ -60,7 +60,7 @@ export function HeroSection() {
 							className={cn("transition-all ease-in-out duration-300 ")}
 						/>
 					)}
-					{theme === "dark" && (
+					{colorMode === "dark" && (
 						<Image
 							src={"/logo-light.svg"}
 							alt="Logo"

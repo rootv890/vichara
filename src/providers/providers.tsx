@@ -1,6 +1,5 @@
 "use client"
 
-import { ColorModeProvider as ThemeProvider } from "@/components/ui/color-mode"
 import { Provider as ChakraProvider } from "@/components/ui/provider"
 
 import { ClerkProvider, useAuth } from "@clerk/nextjs"
@@ -23,10 +22,8 @@ export default function Providers({ children }: { children: ReactNode }) {
 				useAuth={useAuth}
 			>
 				<ChakraProvider>
-					<ThemeProvider>
-						{/* TODO shift auth-guard to one layer down */}
-						{children}
-					</ThemeProvider>
+					{/* Color mode is now handled internally by Chakra UI */}
+					{children}
 				</ChakraProvider>
 			</ConvexProviderWithClerk>
 		</JotaiProvider>

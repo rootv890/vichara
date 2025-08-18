@@ -1,5 +1,6 @@
 import { paginationOptsValidator } from "convex/server"
 import { ConvexError, v } from "convex/values"
+import { IoIosArchive } from "react-icons/io"
 import { Doc, Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import { requireIdentity, requireIdentityAndOrg } from "./_helpers/identity"
@@ -396,5 +397,81 @@ export const updateNote = mutation({
 
 		const { id, ...fields } = args
 		return ctx.db.patch(id, fields)
+	},
+})
+
+export const duplicateNote = mutation({
+	args: { id: v.id("notes") },
+	handler: async (ctx, { id }) => {
+		const { identity, organizationId } = await requireIdentityAndOrg(ctx)
+		const userId = identity.subject
+
+		// --------GENERIC CHECKS-------
+		const existingNote = await ctx.db.get(id)
+		if (!existingNote)
+			throw new ConvexError({ message: "Note not found", code: "NOT_FOUND" })
+		if (existingNote.userId !== userId)
+			throw new ConvexError({ message: "Unauthorized", code: "UNAUTHORIZED" })
+		if (existingNote.organizationId !== organizationId)
+			throw new ConvexError({
+				message: "Different organization",
+				code: "FORBIDDEN",
+			})
+		if (existingNote.isArchived)
+			throw new ConvexError({
+				message: "Cannot duplicate archived note",
+				code: "FORBIDDEN",
+			})
+
+		// ------
+
+		// helper to clean note before inserting
+		function cloneFields(note: any, overrides: Partial<any> = {}) {
+			const { _id, _creationTime, ...rest } = note
+			return {
+				...rest,
+				...overrides,
+				userId,
+				organizationId,
+				isArchived: false,
+				isPublished: false,
+			}
+		}
+
+		// recursive copy
+		async function recursivelyCopy(
+			oldNoteId: Id<"notes">,
+			newParentId: Id<"notes">
+		) {
+			const childNotes = await ctx.db
+				.query("notes")
+				.withIndex("by_user_parent", (q) =>
+					q.eq("userId", userId).eq("parentNote", oldNoteId)
+				)
+				.collect()
+
+			for (const child of childNotes) {
+				if (child.isArchived || child.isPublished) continue
+
+				const newChild = cloneFields(child, { parentNote: newParentId })
+				const newChildId = await ctx.db.insert("notes", newChild)
+
+				await recursivelyCopy(child._id, newChildId)
+			}
+		}
+
+		// create top-level copy
+		const newNoteId = await ctx.db.insert(
+			"notes",
+			cloneFields(existingNote, {
+				title: `Copy of ${existingNote.title}`,
+				parentNote: existingNote.parentNote,
+			})
+		)
+
+		// copy children recursively
+		await recursivelyCopy(existingNote._id, newNoteId)
+
+		return newNoteId
 	},
 })

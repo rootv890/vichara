@@ -8,7 +8,9 @@ import { useQuery } from "convex/react"
 import { useAtomValue } from "jotai/react"
 import { notFound } from "next/navigation"
 import React from "react"
+
 import NoteBanner from "../ui/components/note-banner"
+import NoteHeader from "../ui/components/note-header"
 import NoteIdNav from "../ui/components/note-id-nav"
 import NotesLoading from "../ui/components/notes-loading"
 
@@ -42,15 +44,21 @@ const NoteIdPageView = ({}: Props) => {
 
 	return (
 		<VStack
-			gap={4}
+			gap={0}
 			align="stretch"
 			w={"100%"}
 			h={"full"}
 		>
 			<NoteIdNav />
-			<NoteBanner currentNoteId={currentNoteId} />
-			<Box>Note ID Page View: {currentNoteId}</Box>
-			{JSON.stringify(noteStatus, null, 2)}
+			<VStack
+				gap={0}
+				align="stretch"
+				w={"full"}
+				h={"full"}
+			>
+				<NoteBanner currentNoteId={currentNoteId} />
+				<NoteHeader />
+			</VStack>
 		</VStack>
 	)
 }
