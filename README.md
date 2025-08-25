@@ -196,3 +196,6 @@ If you have any questions or need help, please:
 <div align="center">
   <strong>Built with ❤️ by the VICHARA team</strong>
 </div>
+
+Aug 25 - Coding in iPad - expect slow development for few days until my mac turns on again!
+
