@@ -2,6 +2,12 @@
   <img src="./public/logo-light.svg" alt="VICHARA Logo" width="200" height="auto">
 </div>
 
+<div align="center" style="margin: 1em 0;">
+   <strong style="color: #b7791f; background: #fffbe6; padding: 0.5em 1em; border-radius: 6px; display: inline-block; font-size: 1.05em;">
+      ⚠️ Heads up! Development will be slow for a few days as my Mac is in for repair—coding from iPad for now.
+   </strong>
+</div>
+
 # VICHARA
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.4.6-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -189,7 +195,7 @@ If you have any questions or need help, please:
 
 - Open an [issue](https://github.com/rootv890/vichara/issues)
 - Join our [Discord community](#)
-- Email us at support@vichara.dev
+- Email us at <support@vichara.dev>
 
 ---
 
@@ -198,4 +204,3 @@ If you have any questions or need help, please:
 </div>
 
 Aug 25 - Coding in iPad - expect slow development for few days until my mac turns on again!
-
